@@ -1,0 +1,123 @@
+query IsUserLoggedIn {
+  isLoggedIn @client
+}
+
+query UserData {
+  userData @client {
+    id
+    name
+    email
+    createdAt
+  }
+}
+
+query User($name: String, $id: ID, $cursor: String) {
+  user(name: $name, id: $id) {
+    id
+    name
+    createdAt
+    watched(cursor: $cursor) {
+      cursor
+      hasMore
+      watched {
+        id
+        createdAt
+        userId
+        rating {
+          value
+        }
+        review {
+          body
+        }
+        tvData {
+          season
+          episode
+        }
+        itemType
+        item {
+          ...on Movie {
+            id
+            title
+            release_date
+            poster_path
+            backdrop_path
+          }
+          ...on Tv {
+            id
+            name
+            first_air_date
+            poster_path
+            backdrop_path
+          }
+        }
+      }
+    }
+  }
+}
+
+query Movie($id: ID, $cursor: String) {
+  movie(id: $id) {
+    id
+    title
+    overview
+    release_date
+    poster_path
+    backdrop_path
+    vote_average
+    vote_count
+    watched(cursor: $cursor, filter: "Reviewed") {
+      cursor
+      hasMore
+      filter
+      watched {
+        id
+        createdAt
+        tvData {
+          season
+          episode
+        }
+        rating {
+          value
+        }
+        review {
+          body
+        }
+        user {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+query Watched($id: ID!) {
+  watched(id: $id) {
+    id
+    createdAt
+    tvData {
+      season
+      episode
+    }
+    rating {
+      value
+    }
+    review {
+      body
+    }
+    user {
+      id
+      name
+    }
+  }
+}
+
+query SearchContent($title: String!) {
+  searchContent(title: $title) {
+    id
+    tmdbId
+    title
+    release_date
+    type
+  }
+}
