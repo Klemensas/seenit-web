@@ -35,14 +35,14 @@ query User($name: String, $id: ID, $cursor: String) {
         }
         itemType
         item {
-          ...on Movie {
+          ... on Movie {
             id
             title
             release_date
             poster_path
             backdrop_path
           }
-          ...on Tv {
+          ... on Tv {
             id
             name
             first_air_date
@@ -68,7 +68,7 @@ query Movie($id: ID, $cursor: String) {
     watched(cursor: $cursor, filter: "Reviewed") {
       cursor
       hasMore
-      filter
+      # filter
       watched {
         id
         createdAt
@@ -108,6 +108,36 @@ query Watched($id: ID!) {
     user {
       id
       name
+    }
+  }
+}
+
+query Watches($userId: ID, $itemId: ID, $itemType: ItemType, $cursor: String) {
+  watches(
+    userId: $userId
+    itemId: $itemId
+    itemType: $itemType
+    cursor: $cursor
+  ) {
+    cursor
+    hasMore
+    watched {
+      id
+      createdAt
+      tvData {
+        season
+        episode
+      }
+      rating {
+        value
+      }
+      review {
+        body
+      }
+      user {
+        id
+        name
+      }
     }
   }
 }

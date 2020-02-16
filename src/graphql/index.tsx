@@ -136,6 +136,7 @@ export type Mutation = {
    __typename?: 'Mutation',
   _?: Maybe<Scalars['Boolean']>,
   addWatched: Watched,
+  removeWatched: Scalars['ID'],
   register: LocalAuth,
   login: LocalAuth,
   setIsLoggedIn: Scalars['Boolean'],
@@ -150,6 +151,11 @@ export type MutationAddWatchedArgs = {
   review?: Maybe<ReviewInput>,
   tvData?: Maybe<TvDataInput>,
   createdAt?: Maybe<Scalars['Float']>
+};
+
+
+export type MutationRemoveWatchedArgs = {
+  itemId: Scalars['ID']
 };
 
 
@@ -190,7 +196,7 @@ export type Query = {
   tv?: Maybe<Tv>,
   season?: Maybe<Season>,
   episode?: Maybe<Episode>,
-  allWatched?: Maybe<Array<Watched>>,
+  watches: WatchedCursor,
   watched: Watched,
   users?: Maybe<Array<User>>,
   user: User,
@@ -218,6 +224,14 @@ export type QuerySeasonArgs = {
 
 export type QueryEpisodeArgs = {
   id?: Maybe<Scalars['ID']>
+};
+
+
+export type QueryWatchesArgs = {
+  userId?: Maybe<Scalars['ID']>,
+  itemId?: Maybe<Scalars['ID']>,
+  itemType?: Maybe<ItemType>,
+  cursor?: Maybe<Scalars['String']>
 };
 
 
@@ -449,13 +463,8 @@ export type WatchedCursor = {
    __typename?: 'WatchedCursor',
   watched: Array<Watched>,
   cursor?: Maybe<Scalars['String']>,
-  filter?: Maybe<WatchedFilter>,
   hasMore: Scalars['Boolean'],
 };
-
-export enum WatchedFilter {
-  Reviewed = 'Reviewed'
-}
 
 export type LoginMutationVariables = {
   email: Scalars['String'],
@@ -515,6 +524,44 @@ export type SetUserDataMutation = (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'name' | 'email' | 'createdAt'>
   ) }
+);
+
+export type AddWatchedMutationVariables = {
+  itemId: Scalars['ID'],
+  mediaType: TmdbMediaType,
+  createdAt: Scalars['Float'],
+  rating?: Maybe<RatingInput>,
+  review?: Maybe<ReviewInput>,
+  tvData?: Maybe<TvDataInput>
+};
+
+
+export type AddWatchedMutation = (
+  { __typename?: 'Mutation' }
+  & { addWatched: (
+    { __typename?: 'Watched' }
+    & Pick<Watched, 'id' | 'itemType' | 'createdAt'>
+    & { rating: Maybe<(
+      { __typename?: 'Rating' }
+      & Pick<Rating, 'value'>
+    )>, review: Maybe<(
+      { __typename?: 'Review' }
+      & Pick<Review, 'body'>
+    )>, tvData: Maybe<(
+      { __typename?: 'TvData' }
+      & Pick<TvData, 'season' | 'episode'>
+    )> }
+  ) }
+);
+
+export type RemoveWatchedMutationVariables = {
+  itemId: Scalars['ID']
+};
+
+
+export type RemoveWatchedMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeWatched'>
 );
 
 export type IsUserLoggedInQueryVariables = {};
@@ -588,7 +635,7 @@ export type MovieQuery = (
     & Pick<Movie, 'id' | 'title' | 'overview' | 'release_date' | 'poster_path' | 'backdrop_path' | 'vote_average' | 'vote_count'>
     & { watched: (
       { __typename?: 'WatchedCursor' }
-      & Pick<WatchedCursor, 'cursor' | 'hasMore' | 'filter'>
+      & Pick<WatchedCursor, 'cursor' | 'hasMore'>
       & { watched: Array<(
         { __typename?: 'Watched' }
         & Pick<Watched, 'id' | 'createdAt'>
@@ -633,6 +680,39 @@ export type WatchedQuery = (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name'>
     ) }
+  ) }
+);
+
+export type WatchesQueryVariables = {
+  userId?: Maybe<Scalars['ID']>,
+  itemId?: Maybe<Scalars['ID']>,
+  itemType?: Maybe<ItemType>,
+  cursor?: Maybe<Scalars['String']>
+};
+
+
+export type WatchesQuery = (
+  { __typename?: 'Query' }
+  & { watches: (
+    { __typename?: 'WatchedCursor' }
+    & Pick<WatchedCursor, 'cursor' | 'hasMore'>
+    & { watched: Array<(
+      { __typename?: 'Watched' }
+      & Pick<Watched, 'id' | 'createdAt'>
+      & { tvData: Maybe<(
+        { __typename?: 'TvData' }
+        & Pick<TvData, 'season' | 'episode'>
+      )>, rating: Maybe<(
+        { __typename?: 'Rating' }
+        & Pick<Rating, 'value'>
+      )>, review: Maybe<(
+        { __typename?: 'Review' }
+        & Pick<Review, 'body'>
+      )>, user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'name'>
+      ) }
+    )> }
   ) }
 );
 
@@ -864,6 +944,119 @@ export function useSetUserDataMutation(baseOptions?: ApolloReactHooks.MutationHo
 export type SetUserDataMutationHookResult = ReturnType<typeof useSetUserDataMutation>;
 export type SetUserDataMutationResult = ApolloReactCommon.MutationResult<SetUserDataMutation>;
 export type SetUserDataMutationOptions = ApolloReactCommon.BaseMutationOptions<SetUserDataMutation, SetUserDataMutationVariables>;
+export const AddWatchedDocument = gql`
+    mutation AddWatched($itemId: ID!, $mediaType: TmdbMediaType!, $createdAt: Float!, $rating: RatingInput, $review: ReviewInput, $tvData: TvDataInput) {
+  addWatched(itemId: $itemId, mediaType: $mediaType, rating: $rating, review: $review, createdAt: $createdAt, tvData: $tvData) {
+    id
+    itemType
+    createdAt
+    rating {
+      value
+    }
+    review {
+      body
+    }
+    tvData {
+      season
+      episode
+    }
+  }
+}
+    `;
+export type AddWatchedMutationFn = ApolloReactCommon.MutationFunction<AddWatchedMutation, AddWatchedMutationVariables>;
+export type AddWatchedComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<AddWatchedMutation, AddWatchedMutationVariables>, 'mutation'>;
+
+    export const AddWatchedComponent = (props: AddWatchedComponentProps) => (
+      <ApolloReactComponents.Mutation<AddWatchedMutation, AddWatchedMutationVariables> mutation={AddWatchedDocument} {...props} />
+    );
+    
+export type AddWatchedProps<TChildProps = {}> = ApolloReactHoc.MutateProps<AddWatchedMutation, AddWatchedMutationVariables> | TChildProps;
+export function withAddWatched<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  AddWatchedMutation,
+  AddWatchedMutationVariables,
+  AddWatchedProps<TChildProps>>) {
+    return ApolloReactHoc.withMutation<TProps, AddWatchedMutation, AddWatchedMutationVariables, AddWatchedProps<TChildProps>>(AddWatchedDocument, {
+      alias: 'addWatched',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useAddWatchedMutation__
+ *
+ * To run a mutation, you first call `useAddWatchedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddWatchedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addWatchedMutation, { data, loading, error }] = useAddWatchedMutation({
+ *   variables: {
+ *      itemId: // value for 'itemId'
+ *      mediaType: // value for 'mediaType'
+ *      createdAt: // value for 'createdAt'
+ *      rating: // value for 'rating'
+ *      review: // value for 'review'
+ *      tvData: // value for 'tvData'
+ *   },
+ * });
+ */
+export function useAddWatchedMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddWatchedMutation, AddWatchedMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddWatchedMutation, AddWatchedMutationVariables>(AddWatchedDocument, baseOptions);
+      }
+export type AddWatchedMutationHookResult = ReturnType<typeof useAddWatchedMutation>;
+export type AddWatchedMutationResult = ApolloReactCommon.MutationResult<AddWatchedMutation>;
+export type AddWatchedMutationOptions = ApolloReactCommon.BaseMutationOptions<AddWatchedMutation, AddWatchedMutationVariables>;
+export const RemoveWatchedDocument = gql`
+    mutation RemoveWatched($itemId: ID!) {
+  removeWatched(itemId: $itemId)
+}
+    `;
+export type RemoveWatchedMutationFn = ApolloReactCommon.MutationFunction<RemoveWatchedMutation, RemoveWatchedMutationVariables>;
+export type RemoveWatchedComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<RemoveWatchedMutation, RemoveWatchedMutationVariables>, 'mutation'>;
+
+    export const RemoveWatchedComponent = (props: RemoveWatchedComponentProps) => (
+      <ApolloReactComponents.Mutation<RemoveWatchedMutation, RemoveWatchedMutationVariables> mutation={RemoveWatchedDocument} {...props} />
+    );
+    
+export type RemoveWatchedProps<TChildProps = {}> = ApolloReactHoc.MutateProps<RemoveWatchedMutation, RemoveWatchedMutationVariables> | TChildProps;
+export function withRemoveWatched<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  RemoveWatchedMutation,
+  RemoveWatchedMutationVariables,
+  RemoveWatchedProps<TChildProps>>) {
+    return ApolloReactHoc.withMutation<TProps, RemoveWatchedMutation, RemoveWatchedMutationVariables, RemoveWatchedProps<TChildProps>>(RemoveWatchedDocument, {
+      alias: 'removeWatched',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useRemoveWatchedMutation__
+ *
+ * To run a mutation, you first call `useRemoveWatchedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveWatchedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeWatchedMutation, { data, loading, error }] = useRemoveWatchedMutation({
+ *   variables: {
+ *      itemId: // value for 'itemId'
+ *   },
+ * });
+ */
+export function useRemoveWatchedMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RemoveWatchedMutation, RemoveWatchedMutationVariables>) {
+        return ApolloReactHooks.useMutation<RemoveWatchedMutation, RemoveWatchedMutationVariables>(RemoveWatchedDocument, baseOptions);
+      }
+export type RemoveWatchedMutationHookResult = ReturnType<typeof useRemoveWatchedMutation>;
+export type RemoveWatchedMutationResult = ApolloReactCommon.MutationResult<RemoveWatchedMutation>;
+export type RemoveWatchedMutationOptions = ApolloReactCommon.BaseMutationOptions<RemoveWatchedMutation, RemoveWatchedMutationVariables>;
 export const IsUserLoggedInDocument = gql`
     query IsUserLoggedIn {
   isLoggedIn @client
@@ -1067,7 +1260,6 @@ export const MovieDocument = gql`
     watched(cursor: $cursor, filter: "Reviewed") {
       cursor
       hasMore
-      filter
       watched {
         id
         createdAt
@@ -1199,6 +1391,78 @@ export function useWatchedLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHook
 export type WatchedQueryHookResult = ReturnType<typeof useWatchedQuery>;
 export type WatchedLazyQueryHookResult = ReturnType<typeof useWatchedLazyQuery>;
 export type WatchedQueryResult = ApolloReactCommon.QueryResult<WatchedQuery, WatchedQueryVariables>;
+export const WatchesDocument = gql`
+    query Watches($userId: ID, $itemId: ID, $itemType: ItemType, $cursor: String) {
+  watches(userId: $userId, itemId: $itemId, itemType: $itemType, cursor: $cursor) {
+    cursor
+    hasMore
+    watched {
+      id
+      createdAt
+      tvData {
+        season
+        episode
+      }
+      rating {
+        value
+      }
+      review {
+        body
+      }
+      user {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+export type WatchesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<WatchesQuery, WatchesQueryVariables>, 'query'>;
+
+    export const WatchesComponent = (props: WatchesComponentProps) => (
+      <ApolloReactComponents.Query<WatchesQuery, WatchesQueryVariables> query={WatchesDocument} {...props} />
+    );
+    
+export type WatchesProps<TChildProps = {}> = ApolloReactHoc.DataProps<WatchesQuery, WatchesQueryVariables> | TChildProps;
+export function withWatches<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  WatchesQuery,
+  WatchesQueryVariables,
+  WatchesProps<TChildProps>>) {
+    return ApolloReactHoc.withQuery<TProps, WatchesQuery, WatchesQueryVariables, WatchesProps<TChildProps>>(WatchesDocument, {
+      alias: 'watches',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useWatchesQuery__
+ *
+ * To run a query within a React component, call `useWatchesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWatchesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWatchesQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      itemId: // value for 'itemId'
+ *      itemType: // value for 'itemType'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useWatchesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<WatchesQuery, WatchesQueryVariables>) {
+        return ApolloReactHooks.useQuery<WatchesQuery, WatchesQueryVariables>(WatchesDocument, baseOptions);
+      }
+export function useWatchesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<WatchesQuery, WatchesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<WatchesQuery, WatchesQueryVariables>(WatchesDocument, baseOptions);
+        }
+export type WatchesQueryHookResult = ReturnType<typeof useWatchesQuery>;
+export type WatchesLazyQueryHookResult = ReturnType<typeof useWatchesLazyQuery>;
+export type WatchesQueryResult = ApolloReactCommon.QueryResult<WatchesQuery, WatchesQueryVariables>;
 export const SearchContentDocument = gql`
     query SearchContent($title: String!) {
   searchContent(title: $title) {

@@ -3,13 +3,15 @@ import { Switch, Route } from 'react-router-dom';
 
 import './App.scss';
 import AuthRoute from './auth/AuthRoute';
-import Home from './Home';
+import Navigation from './common/Navigation';
+
 import Login from './auth/Login';
+import Home from './Home';
 import Profile from './profile/Profile';
 import Show from './show/Show';
 import Movie from './show/Movie';
 import Setup from './setup/Setup';
-import Navigation from './common/Navigation';
+import Dashboard from './dashboard/Dashboard';
 
 export default function App() {
   return (
@@ -17,12 +19,12 @@ export default function App() {
       <Navigation />
       <div>
         <Switch>
-          <AuthRoute exact path="/" component={Home} />
-          <Route exact path="/profile/:name" component={Profile} />
-          <Route exact path="/show/:id" component={Show} />
-          <Route path="/movie/:id" component={Movie} />
+          <AuthRoute exact path="/" component={Dashboard} redirectComponent={Home} />
           <Route exact path="/setup" component={Setup} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/show/:id" component={Show} />
+          <Route path="/movie/:id" component={Movie} />
+          <Route exact path="/profile/:name" component={Profile} />
         </Switch>
       </div>
     </>

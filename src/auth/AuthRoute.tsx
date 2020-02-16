@@ -5,13 +5,13 @@ import { useIsUserLoggedInQuery } from '../graphql';
 
 
 export default function AuthRoute({
-  children,
-  ...props
-}: RouteProps) {
+  redirectTo = '/login',
+  redirectComponent,
+  ...routeProps
+}: RouteProps & { redirectTo?: string, redirectComponent?: RouteProps['component'] }) {
   const { data } = useIsUserLoggedInQuery()
 
-  return (
-    <Route {...props} render={() => (data && data.isLoggedIn ? children : <Redirect to="/login" />
-    )} />
-  )
+  if (data?.isLoggedIn) return <Route {...routeProps} />
+
+  return redirectComponent ? <Route {...routeProps} component={redirectComponent} /> : <Redirect to={redirectTo} />
 }

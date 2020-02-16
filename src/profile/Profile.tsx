@@ -47,14 +47,10 @@ export default function Profile() {
   // if (loading || error) return null
 
   const { watched: { hasMore, cursor, watched }, ...user } = data.user
-
-  if (!watched) return null
-
   const targetItem = watched[selected.targetIndex] || null
 
   return (
-    <>
-     <InfiniteScroll loading={loading} hasMore={hasMore} loadMore={loadMore(fetchMore, { name, cursor })} >
+    <InfiniteScroll loading={loading} hasMore={hasMore} loadMore={loadMore(fetchMore, { name, cursor })} >
         <div className="grid grid-4">
           {watched.map(({ id, item, itemType, rating, review, tvData, createdAt }, index) => {
             if (!item) return null
@@ -117,6 +113,5 @@ export default function Profile() {
           )}
         </div>
       </InfiniteScroll>
-    </>
   )
 }

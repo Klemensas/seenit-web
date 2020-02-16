@@ -28,7 +28,6 @@ mutation SetIsLoggedIn($isLoggedIn: Boolean!) {
   setIsLoggedIn(isLoggedIn: $isLoggedIn) @client
 }
 
-
 mutation SetUserData($userData: UserInput!) {
   setUserData(userData: $userData) @client {
     id
@@ -36,4 +35,40 @@ mutation SetUserData($userData: UserInput!) {
     email
     createdAt
   }
+}
+
+mutation AddWatched(
+  $itemId: ID!
+  $mediaType: TmdbMediaType!
+  $createdAt: Float!
+  $rating: RatingInput
+  $review: ReviewInput
+  $tvData: TvDataInput
+) {
+  addWatched(
+    itemId: $itemId
+    mediaType: $mediaType
+    rating: $rating
+    review: $review
+    createdAt: $createdAt
+    tvData: $tvData
+  ) {
+    id
+    itemType
+    createdAt
+    rating {
+      value
+    }
+    review {
+      body
+    }
+    tvData {
+      season
+      episode
+    }
+  }
+}
+
+mutation RemoveWatched($itemId: ID!) {
+  removeWatched(itemId: $itemId)
 }

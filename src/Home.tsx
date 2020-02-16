@@ -7,11 +7,13 @@ import vlcSvg from './assets/logos/vlc.svg';
 
 export default function Home() {
   return (
-    <div className="hero-box bp3-dark">
+    <div className="hero-box">
       <H1>Automatically track what you've watched</H1>
       <H2 className="pt-3">Start tracking</H2>
       <div className="py-4">
-        <Button large fill className="my-4">Join seen it</Button>
+        <Button large fill className="my-4">
+          <Link to={`/login`}>Join seen it</Link>
+        </Button>
         <Button large fill className="my-4">
           <Link to={`/setup`}>Download for your used platforms</Link>
         </Button>
@@ -19,10 +21,15 @@ export default function Home() {
       <div>
         <H3 className="pb-2">Currently works with</H3>
         <div>
-          <img className="mx-3" style={{ width: 48 }} alt="Chrome" src={chromeSvg} />
+          <img
+            className="mx-3"
+            style={{ width: 48 }}
+            alt="Chrome"
+            src={chromeSvg}
+          />
           <img className="mx-3" style={{ height: 48 }} alt="VLC" src={vlcSvg} />
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -15,4 +15,12 @@ query IsUserLoggedIn {
 
 
 export const resolvers: Resolvers = {
+  Mutation: {
+    setIsLoggedIn: (root, { isLoggedIn }, { cache }) => {
+      cache.writeData({ data: { isLoggedIn } });
+
+      return isLoggedIn;
+    },
+  },
+
 }
