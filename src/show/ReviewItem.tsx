@@ -1,10 +1,8 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Spinner } from '@blueprintjs/core';
-import { formatDistanceStrict } from 'date-fns';
 
 import { useWatchedQuery } from '../graphql';
-import Rating from '../common/Rating';
 import Review from './Review';
 
 export default function ReviewItem() {

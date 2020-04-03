@@ -55,7 +55,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
     isLoading: false,
   });
   const { data: localUser } = useUserDataQuery();
-  const { loading, data, fetchMore } = useMovieQuery({
+  const { data } = useMovieQuery({
     variables: {
       id,
     },
@@ -71,7 +71,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
     returnPartialData: true,
     fetchPolicy: 'cache-and-network',
   });
-  const [addWatched, { loading: loadingWatched }] = useAddWatchedMutation({
+  const [addWatched] = useAddWatchedMutation({
     update: (cache, { data: newWatched }) => {
       const { watches } =
         cache.readQuery<WatchesQuery>({
@@ -116,7 +116,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
     release_date,
     watched,
   } = data.movie;
-  const { cursor } = watched || {};
+  // const { cursor } = watched || {};
   const rating = vote_count > 100 ? vote_average : null;
 
   return (

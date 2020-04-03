@@ -1,4 +1,4 @@
-import React, { ReactChildren, ReactChild } from 'react';
+import React, { ReactChild } from 'react';
 import classNames from 'classnames';
 import {
   Dialog,

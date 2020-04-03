@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, MenuItem, PopoverPosition } from '@blueprintjs/core';
-import { Suggest, Select, IItemRendererProps } from '@blueprintjs/select';
+import { Suggest, IItemRendererProps } from '@blueprintjs/select';
 
 import { useSearchContentQuery, SearchItem } from '../graphql';
 import { useHistory } from 'react-router-dom';

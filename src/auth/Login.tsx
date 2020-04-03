@@ -8,7 +8,7 @@ import {
   LoginMutation,
   RegisterMutation,
 } from '../graphql';
-import { MutationFunctionOptions, MutationHookOptions } from 'react-apollo';
+import { MutationFunctionOptions } from 'react-apollo';
 import { FetchResult } from 'apollo-link';
 import { updateStorage } from '../common/helpers/storage';
 

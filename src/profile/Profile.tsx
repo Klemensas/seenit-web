@@ -2,22 +2,32 @@ import React, { MouseEvent, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Spring } from 'react-spring/renderprops';
 import { ObservableQueryFields } from 'react-apollo';
-import { Card, Icon } from "@blueprintjs/core";
+import { Card, Icon } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { formatDistanceStrict } from 'date-fns';
 
-import { useUserQuery, ItemType, Movie, Tv, UserQueryVariables, UserQuery } from '../graphql';
+import {
+  useUserQuery,
+  ItemType,
+  Movie,
+  Tv,
+  UserQueryVariables,
+  UserQuery,
+} from '../graphql';
 import Rating from '../common/Rating';
 import InfiniteScroll from '../common/InfiniteScroll';
 
-const loadMore = (fetchMore: ObservableQueryFields<UserQuery, UserQueryVariables>['fetchMore'], variables: UserQueryVariables) => () => {
+const loadMore = (
+  fetchMore: ObservableQueryFields<UserQuery, UserQueryVariables>['fetchMore'],
+  variables: UserQueryVariables,
+) => () => {
   return fetchMore({
     variables,
-    updateQuery: ((prev, { fetchMoreResult }) => {
+    updateQuery: (prev, { fetchMoreResult }) => {
       if (!fetchMoreResult?.user) return prev;
 
-      const prevWatched = prev.user?.watched?.watched || []
-      const newWatched = fetchMoreResult.user.watched?.watched || []
+      const prevWatched = prev.user?.watched?.watched || [];
+      const newWatched = fetchMoreResult.user.watched?.watched || [];
 
       return {
         user: {
@@ -25,13 +35,13 @@ const loadMore = (fetchMore: ObservableQueryFields<UserQuery, UserQueryVariables
           watched: {
             hasMore: false,
             ...fetchMoreResult.user.watched,
-            watched: [...prevWatched, ...newWatched]
-          }
-        }
-      }
-    })
-  })
-}
+            watched: [...prevWatched, ...newWatched],
+          },
+        },
+      };
+    },
+  });
+};
 
 export default function Profile() {
   const [selected, setSelected] = useState<any>({
@@ -41,77 +51,133 @@ export default function Profile() {
 
   const { name } = useParams();
   const history = useHistory();
-  const { loading, data, error, fetchMore } = useUserQuery({ variables: { name }, notifyOnNetworkStatusChange: true });
+  const { loading, data, fetchMore } = useUserQuery({
+    variables: { name },
+    notifyOnNetworkStatusChange: true,
+  });
 
-  if (!data?.user?.watched) return null
-  // if (loading || error) return null
+  if (!data?.user?.watched) return null;
 
-  const { watched: { hasMore, cursor, watched }, ...user } = data.user
-  const targetItem = watched[selected.targetIndex] || null
+  const {
+    watched: { hasMore, cursor, watched },
+  } = data.user;
+  const targetItem = watched[selected.targetIndex] || null;
 
   return (
-    <InfiniteScroll loading={loading} hasMore={hasMore} loadMore={loadMore(fetchMore, { name, cursor })} >
-        <div className="grid grid-4">
-          {watched.map(({ id, item, itemType, rating, review, tvData, createdAt }, index) => {
-            if (!item) return null
+    <InfiniteScroll
+      loading={loading}
+      hasMore={hasMore}
+      loadMore={loadMore(fetchMore, { name, cursor })}
+    >
+      <div className="grid grid-4">
+        {watched.map(
+          (
+            { id, item, itemType, rating, review, tvData, createdAt },
+            index,
+          ) => {
+            if (!item) return null;
 
-            let name: string
+            let name: string;
             if (itemType === ItemType.Movie) {
-              name = (item as Movie).title
+              name = (item as Movie).title;
             } else {
-              name = (item as Tv).name
+              name = (item as Tv).name;
             }
 
             return (
-              <Card key={id} className="card-watched" onClick={(e: MouseEvent<HTMLDivElement>) => {
-                const position = e.currentTarget.getBoundingClientRect();
-                setSelected({
-                style: {
-                    left: position.left,
-                    top: position.top,
-                    width: position.width,
-                    height: position.height,
-                    position: 'fixed',
-                  },
-                  targetIndex: index,
-                })
-              }}>
+              <Card
+                key={id}
+                className="card-watched"
+                onClick={(e: MouseEvent<HTMLDivElement>) => {
+                  const position = e.currentTarget.getBoundingClientRect();
+                  setSelected({
+                    style: {
+                      left: position.left,
+                      top: position.top,
+                      width: position.width,
+                      height: position.height,
+                      position: 'fixed',
+                    },
+                    targetIndex: index,
+                  });
+                }}
+              >
                 <div>
                   <div style={{ position: 'relative' }}>
-                    <img width="300" height="200" className="img-responsive" src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`} style={{ position: 'relative' }} alt="" />
+                    <img
+                      width="300"
+                      height="200"
+                      className="img-responsive"
+                      src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
+                      style={{ position: 'relative' }}
+                      alt=""
+                    />
                   </div>
                   <div className="card-watched-footer">
                     {rating && <Rating value={rating.value} />}
-                    {review && review.body && <Icon icon={IconNames.COMMENT} color="gold" />}
+                    {review && review.body && (
+                      <Icon icon={IconNames.COMMENT} color="gold" />
+                    )}
                   </div>
                   <div className="p-3 text-left title">
                     <div className="flex flex-content-between flex-items-center">
-                      <strong className="bp3-text-large bp3-text-overflow-ellipsis pr-2">{name}</strong>
-                    {tvData && (<div>S{tvData.season}E{tvData.episode}</div>)}
+                      <strong className="bp3-text-large bp3-text-overflow-ellipsis pr-2">
+                        {name}
+                      </strong>
+                      {tvData && (
+                        <div>
+                          S{tvData.season}E{tvData.episode}
+                        </div>
+                      )}
                     </div>
-                    <p className="bp3-text-small card-watched-muted">{formatDistanceStrict(createdAt, Date.now(), { addSuffix: true })}</p>
+                    <p className="bp3-text-small card-watched-muted">
+                      {formatDistanceStrict(createdAt, Date.now(), {
+                        addSuffix: true,
+                      })}
+                    </p>
                   </div>
                 </div>
               </Card>
-            )
-          })}
-          {targetItem && (
-            <Spring 
-              config={{ velocity: 120, friction: 16, clamp: true }}
-              // config={{ duration: 500, easing: '' }}
-              from={selected.style}
-              to={{ left: 0, top: 50, width: window.innerWidth, height: window.innerHeight }}
-              onRest={() => history.push(`/movie/${targetItem.item.id}/watched/${targetItem.id}`)}
-            >
-              {props => (
-                <div style={props}>
-                  <img width="300" height="200" className="img-responsive" src={`https://image.tmdb.org/t/p/w1280${targetItem.item.backdrop_path}`} style={{ position: 'relative', maxHeight: 300, objectFit: 'cover' }} alt="" />
-                  <div style={{ height: '100%', backgroundColor: '#0C1821' }}/>
-                </div>
-              )}
-            </Spring>
-          )}
-        </div>
-      </InfiniteScroll>
-  )
+            );
+          },
+        )}
+        {targetItem && (
+          <Spring
+            config={{ velocity: 120, friction: 16, clamp: true }}
+            // config={{ duration: 500, easing: '' }}
+            from={selected.style}
+            to={{
+              left: 0,
+              top: 50,
+              width: window.innerWidth,
+              height: window.innerHeight,
+            }}
+            onRest={() =>
+              history.push(
+                `/movie/${targetItem.item.id}/watched/${targetItem.id}`,
+              )
+            }
+          >
+            {props => (
+              <div style={props}>
+                <img
+                  width="300"
+                  height="200"
+                  className="img-responsive"
+                  src={`https://image.tmdb.org/t/p/w1280${targetItem.item.backdrop_path}`}
+                  style={{
+                    position: 'relative',
+                    maxHeight: 300,
+                    objectFit: 'cover',
+                  }}
+                  alt=""
+                />
+                <div style={{ height: '100%', backgroundColor: '#0C1821' }} />
+              </div>
+            )}
+          </Spring>
+        )}
+      </div>
+    </InfiniteScroll>
+  );
 }

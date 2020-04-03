@@ -1,11 +1,12 @@
 import React from 'react';
+
 import { useUserQuery, useUserDataQuery } from '../graphql';
 import Seen from '../common/Seen';
 
 export default function Dashboard() {
   const { data: localUser } = useUserDataQuery();
   const userData = localUser?.userData;
-  const { loading, data, error, fetchMore } = useUserQuery({
+  const { data } = useUserQuery({
     variables: { id: userData?.id },
   });
 
@@ -13,10 +14,8 @@ export default function Dashboard() {
   if (!data?.user?.watched) return null;
 
   const {
-    watched: { hasMore, watched },
+    watched: { watched },
   } = data.user;
-
-  console.error('www', watched);
 
   return (
     <>
