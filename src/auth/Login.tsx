@@ -8,9 +8,9 @@ import {
   LoginMutation,
   RegisterMutation,
 } from '../graphql';
-import { MutationFunctionOptions } from 'react-apollo';
 import { FetchResult } from 'apollo-link';
 import { updateStorage } from '../common/helpers/storage';
+import { MutationFunctionOptions } from '@apollo/client';
 
 export default function Login() {
   const history = useHistory();
@@ -22,22 +22,24 @@ export default function Login() {
   const [isLogin, setLogin] = React.useState(true);
   const mutationParams = {
     variables: form,
-    update: (
-      cache: Record<string, any>,
-      { data }: FetchResult<LoginMutation | RegisterMutation>,
-    ) => {
-      if (!data) return;
+    // update: (
+    //   cache: Record<string, any>,
+    //   { data }: FetchResult<LoginMutation | RegisterMutation>,
+    // ) => {
+    //   if (!data) return;
 
-      const { token, user } = 'login' in data ? data.login : data.register;
+    //   const { token, user } = 'login' in data ? data.login : data.register;
 
-      updateStorage('token', token);
-      cache.writeData({
-        data: {
-          isLoggedIn: true,
-          userData: user,
-        },
-      });
-    },
+    //   updateStorage('token', token);
+    //   console.error('u wot');
+    //   debugger;
+    //   cache.writeData({
+    //     data: {
+    //       isLoggedIn: true,
+    //       userData: user,
+    //     },
+    //   });
+    // },
   };
 
   const [login] = useLoginMutation(mutationParams);

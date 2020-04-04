@@ -1,4 +1,4 @@
-import { ObservableQueryFields } from 'react-apollo';
+import { ObservableQueryFields } from '@apollo/client';
 
 export const loadMore = <Q extends {}, V extends {}>(
   fetchMore: ObservableQueryFields<Q, V>['fetchMore'],

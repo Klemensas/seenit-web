@@ -1,15 +1,25 @@
 overwrite: true
-schema: 
+schema:
   - http://localhost:9000/graphql
   - src/graphql/client.graphql
-documents: "src/**/*.graphql"
+documents: 'src/**/*.graphql'
 generates:
   src/graphql/index.tsx:
     plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
     config:
+      withComponent: false
+      withHOC: false
       withHooks: true
-  src/graphql/fragments.ts:
-    - "fragment-matcher"
+      reactApolloVersion: 3
+      gqlImport: '@apollo/client#gql'
+  src/graphql/introspection.ts:
+    plugins:
+      - 'fragment-matcher'
+    config:
+      apolloClientVersion: 3
+hooks:
+  afterAllFileWrite:
+    - prettier --write

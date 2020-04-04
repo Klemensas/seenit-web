@@ -18,13 +18,13 @@ export default function Navigation() {
   const [setLoggedIn] = useSetIsLoggedInMutation({
     variables: { isLoggedIn: false },
     update: (cache, { data }) => {
-      cache.writeData({
-        data: {
-          isLoggedIn: false,
-          // TODO: replace with cache clearing once client 3.0 is available
-          userData: null,
-        },
-      });
+      // cache.writeData({
+      //   data: {
+      //     isLoggedIn: false,
+      //     // TODO: replace with cache clearing once client 3.0 is available
+      //     userData: null,
+      //   },
+      // });
     },
   });
   const { data } = useUserDataQuery();
