@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { useUserQuery, useUserDataQuery } from '../graphql';
+import { useUserQuery, useAuthQuery } from '../graphql';
 import Seen from '../common/Seen';
 
 export default function Dashboard() {
-  const { data: localUser } = useUserDataQuery();
-  const userData = localUser?.userData;
+  const { data: localUser } = useAuthQuery();
+  const userData = localUser?.auth;
   const { data } = useUserQuery({
     variables: { id: userData?.id },
   });

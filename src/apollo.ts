@@ -4,51 +4,32 @@ import {
   InMemoryCache,
   HttpLink,
 } from '@apollo/client';
-// import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-// import { persistCache } from 'apollo-cache-persist';
 import { onError } from '@apollo/link-error';
+import { setContext } from '@apollo/link-context';
+// import { persistCache } from 'apollo-cache-persist';
 
 import { resolvers, typeDefs } from './graphql/resolvers';
-import { getStorageValue, updateStorage } from './common/helpers/storage';
+import { getStorageValue } from './common/helpers/storage';
 import introspectionQueryResultData from './graphql/introspection';
+import { AuthDocument } from './graphql';
+import { setAuthData } from './graphql/helpers';
+import typePolicies from './graphql/typePolicies';
 
-let g = 1;
-const errorLink = onError(({ graphQLErrors, networkError, ...d }) => {
-  console.error('howdy', graphQLErrors, ++g, d);
+const errorLink = onError(({ graphQLErrors, networkError }) => {
   const isAuthenticationError = graphQLErrors?.some(
     ({ extensions = {} }) => (extensions.code = 'UNAUTHENTICATED'),
   );
 
   if (isAuthenticationError) {
-    // cache.writeData({
-    //   data: {
-    //     isLoggedIn: false,
-    //     userData: null,
-    //   },
-    // });
-    updateStorage('token', null);
-  }
-});
-
-const errorLink2 = onError(({ graphQLErrors, networkError, ...d }) => {
-  console.error('boopadity', d);
-  const isAuthenticationError = graphQLErrors?.some(
-    ({ extensions = {} }) => (extensions.code = 'UNAUTHENTICATED'),
-  );
-
-  if (isAuthenticationError) {
-    // cache.writeData({
-    //   data: {
-    //     isLoggedIn: false,
-    //     userData: null,
-    //   },
-    // });
-    updateStorage('token', null);
+    // TODO: implement refresh token
+    setAuthData(cache);
+    return;
   }
 });
 
 export const cache = new InMemoryCache({
   possibleTypes: introspectionQueryResultData.possibleTypes,
+  typePolicies,
   // cacheRedirects: {
   //   Query: {
   //     movie: (_, { id }, { getCacheKey }) =>
@@ -75,6 +56,23 @@ const httpLink = new HttpLink({
   uri: `http://localhost:9000/graphql`,
 });
 
+const authLink = setContext(request => {
+  const token = getStorageValue('token');
+
+  return {
+    headers: {
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
+cache.writeQuery({
+  query: AuthDocument,
+  data: {
+    auth: getStorageValue('userData') || null,
+  },
+});
+
 export const apolloClient = async () => {
   // console.time('Persist block');
   // await persistCache({
@@ -87,19 +85,19 @@ export const apolloClient = async () => {
   return new ApolloClient({
     cache,
     resolvers,
+    // TODO: follow issue till base param and errorLink gets addressed
     // uri: `http://localhost:9000/graphql`,
     // headers: {
     //   authorization: getStorageValue('token')
     //     ? `Bearer ${getStorageValue('token')}`
     //     : '',
     // },
-    defaultOptions: {
-      query: {
-        fetchPolicy: 'network-only',
-      },
-    },
-    link: ApolloLink.from([errorLink, httpLink, errorLink2]),
-    // link: errorLink,
+    // defaultOptions: {
+    //   query: {
+    //     fetchPolicy: 'network-only',
+    //   },
+    // },
+    link: ApolloLink.from([errorLink, authLink, httpLink]),
     typeDefs,
   });
 };

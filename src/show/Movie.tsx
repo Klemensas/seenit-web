@@ -9,7 +9,7 @@ import { format, formatDistanceStrict } from 'date-fns';
 import {
   useMovieQuery,
   useWatchesQuery,
-  useUserDataQuery,
+  useAuthQuery,
   WatchesQuery,
   useAddWatchedMutation,
   WatchesDocument,
@@ -54,7 +54,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
     target: null,
     isLoading: false,
   });
-  const { data: localUser } = useUserDataQuery();
+  const { data: localUser } = useAuthQuery();
   const { data } = useMovieQuery({
     variables: {
       id,
@@ -62,14 +62,13 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
     returnPartialData: true,
   });
   const watchesVariables = {
-    userId: localUser?.userData?.id,
+    userId: localUser?.auth?.id,
     itemId: id,
   };
   const userWatched = useWatchesQuery({
     variables: watchesVariables,
-    skip: !localUser?.userData?.id,
+    skip: !localUser?.auth?.id,
     returnPartialData: true,
-    fetchPolicy: 'cache-and-network',
   });
   const [addWatched] = useAddWatchedMutation({
     update: (cache, { data: newWatched }) => {
@@ -79,11 +78,11 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
           variables: watchesVariables,
         }) || {};
 
-      if (!watches || !newWatched || !localUser) return;
+      if (!watches || !newWatched || !localUser?.auth) return;
 
       const watchedItem = {
         ...newWatched.addWatched,
-        user: localUser?.userData,
+        user: localUser?.auth,
       };
 
       cache.writeQuery<WatchesQuery>({
@@ -103,7 +102,20 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
   const [
     removeWatched,
     { loading: loadingRemoveWatched },
-  ] = useRemoveWatchedMutation();
+  ] = useRemoveWatchedMutation({
+    update: (cache, { data: removedWatched }) => {
+      const removedId = removedWatched?.removeWatched;
+      const dataId = cache.identify({
+        id: removedId,
+        __typename: 'Watched',
+      });
+
+      if (!removedId || !dataId) return;
+
+      cache.evict(dataId);
+      cache.gc();
+    },
+  });
 
   if (!data?.movie) return null;
 

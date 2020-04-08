@@ -12,44 +12,32 @@ import {
 
 import { Logo } from './Logo';
 import { SearchPage } from './Search';
-import { useSetIsLoggedInMutation, useUserDataQuery } from '../graphql';
+import { useLogoutMutation, useAuthQuery } from '../graphql';
 
 export default function Navigation() {
-  const [setLoggedIn] = useSetIsLoggedInMutation({
-    variables: { isLoggedIn: false },
-    update: (cache, { data }) => {
-      // cache.writeData({
-      //   data: {
-      //     isLoggedIn: false,
-      //     // TODO: replace with cache clearing once client 3.0 is available
-      //     userData: null,
-      //   },
-      // });
-    },
-  });
-  const { data } = useUserDataQuery();
+  const [setAuth] = useLogoutMutation();
+  const { data } = useAuthQuery();
 
   let userPart: ReactNode = '';
-  // TODO: drop userData check once client 3.0 cache clear methods are available
-  if (data?.userData) {
+  if (data?.auth) {
     userPart = (
       <>
         <Popover
           content={
             <Menu>
-              <Link to={`/profile/${data.userData.name}`}>
+              <Link to={`/profile/${data.auth.name}`}>
                 <MenuItem tagName="span" text={'Profile'} />
               </Link>
               <MenuItem
                 tagName="span"
                 text={'Logout'}
-                onClick={() => setLoggedIn()}
+                onClick={() => setAuth()}
               />
             </Menu>
           }
           position={Position.BOTTOM}
         >
-          {data.userData.name}
+          {data.auth.name}
         </Popover>
       </>
     );
