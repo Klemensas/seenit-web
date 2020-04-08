@@ -1,9 +1,5 @@
-query IsUserLoggedIn {
-  isLoggedIn @client
-}
-
-query UserData {
-  userData @client {
+query Auth {
+  auth @client {
     id
     name
     email

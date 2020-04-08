@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, MenuItem, PopoverPosition } from '@blueprintjs/core';
+import { MenuItem, PopoverPosition } from '@blueprintjs/core';
 import { Suggest, IItemRendererProps } from '@blueprintjs/select';
 
 import { useSearchContentQuery, SearchItem } from '../graphql';
@@ -23,21 +23,7 @@ const renderOption = (
     <MenuItem
       active={modifiers.active}
       key={item.id}
-      text={
-        <div>
-          {label}
-          <Button
-            onClick={(e: React.MouseEvent) => {
-              console.error('aaa', e);
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-          >
-            Click
-          </Button>
-          {/* <span>click</span> */}
-        </div>
-      }
+      text={{ label }}
       onClick={handleClick}
     />
   );

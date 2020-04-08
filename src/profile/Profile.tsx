@@ -1,7 +1,7 @@
 import React, { MouseEvent, useState } from 'react';
+import { ObservableQueryFields } from '@apollo/client';
 import { useParams, useHistory } from 'react-router-dom';
 import { Spring } from 'react-spring/renderprops';
-import { ObservableQueryFields } from 'react-apollo';
 import { Card, Icon } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { formatDistanceStrict } from 'date-fns';

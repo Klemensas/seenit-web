@@ -24,17 +24,8 @@ mutation Register($name: String!, $email: String!, $password: String!) {
   }
 }
 
-mutation SetIsLoggedIn($isLoggedIn: Boolean!) {
-  setIsLoggedIn(isLoggedIn: $isLoggedIn) @client
-}
-
-mutation SetUserData($userData: UserInput!) {
-  setUserData(userData: $userData) @client {
-    id
-    name
-    email
-    createdAt
-  }
+mutation Logout {
+  logout @client
 }
 
 mutation AddWatched(

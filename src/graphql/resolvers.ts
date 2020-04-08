@@ -1,26 +1,27 @@
-import gql from 'graphql-tag';
-import { Resolvers } from 'apollo-boost';
+import { Resolvers, gql, ApolloCache, ApolloClient } from '@apollo/client';
+import { setAuthData } from './helpers';
 
 export const typeDefs = gql`
   extend type Query {
-    isLoggedIn: Boolean!
+    auth: User
   }
 `;
 
 export const isLoggedIn = gql`
-query IsUserLoggedIn {
-  isLoggedIn @client
-}
+  query Auth {
+    auth @client
+  }
 `;
-
 
 export const resolvers: Resolvers = {
   Mutation: {
-    setIsLoggedIn: (root, { isLoggedIn }, { cache }) => {
-      cache.writeData({ data: { isLoggedIn } });
-
-      return isLoggedIn;
+    logout: (
+      root,
+      variables,
+      { cache, client }: { cache: ApolloCache<any>; client: ApolloClient<any> },
+    ) => {
+      setAuthData(cache);
+      client.resetStore();
     },
   },
-
-}
+};

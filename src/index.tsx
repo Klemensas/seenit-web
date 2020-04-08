@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter } from 'react-router-dom';
 
 import './styles/index.scss';
@@ -14,8 +14,8 @@ import { apolloClient } from './apollo';
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </ApolloProvider>
-    , document.getElementById('root')
+    </ApolloProvider>,
+    document.getElementById('root'),
   );
 })();
 
