@@ -7,6 +7,15 @@ import {
 } from 'react-router-dom';
 import { format, formatDistanceStrict } from 'date-fns';
 import {
+  Button,
+  Intent,
+  Dialog,
+  Card,
+  Elevation,
+  ButtonGroup,
+} from '@blueprintjs/core';
+
+import {
   useMovieQuery,
   useWatchesQuery,
   useAuthQuery,
@@ -17,30 +26,13 @@ import {
   useEditWatchedMutation,
   TmdbMediaType,
 } from '../graphql';
-import Rating from '../common/Rating';
-import {
-  Button,
-  Intent,
-  Dialog,
-  Card,
-  Elevation,
-  ButtonGroup,
-} from '@blueprintjs/core';
+import { mergeWatches, mergeMovie } from '../graphql/fetchMore';
 import ReviewItem from './ReviewItem';
 import Review from './Review';
+import Rating from '../common/Rating';
 import { loadMore } from '../common/helpers/graphql';
 import SeenMovieForm from '../common/SeenMovieForm';
 import BlockingAlert from '../common/BlockingAlert';
-
-const mergeWatches = (prev: WatchesQuery, next?: WatchesQuery): WatchesQuery =>
-  next
-    ? {
-        watches: {
-          ...next.watches,
-          watched: [...prev.watches.watched, ...next.watches.watched],
-        },
-      }
-    : prev;
 
 type Params = {
   id: string;
@@ -62,7 +54,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
     isLoading: false,
   });
   const { data: localUser } = useAuthQuery();
-  const { data } = useMovieQuery({
+  const { data, fetchMore } = useMovieQuery({
     variables: {
       id,
     },
@@ -140,7 +132,6 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
     release_date,
     watched,
   } = data.movie;
-  // const { cursor } = watched || {};
   const rating = vote_count > 100 ? vote_average : null;
 
   return (
@@ -216,7 +207,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
               addWatched({
                 variables: {
                   createdAt,
-                  itemId: data.movie?.id || '',
+                  itemId: data.movie.id || '',
                   mediaType: TmdbMediaType.Movie,
                   rating: rating
                     ? {
@@ -351,7 +342,14 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
             {watched?.hasMore && (
               <Button
                 text="Show more"
-                onClick={loadMore(fetchMore, { id, cursor })}
+                onClick={loadMore(
+                  fetchMore,
+                  {
+                    id,
+                    cursor: watched.cursor,
+                  },
+                  mergeMovie,
+                )}
               />
             )}
           </div>
