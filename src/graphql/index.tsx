@@ -181,7 +181,7 @@ export type Query = {
   auth?: Maybe<User>;
   episode?: Maybe<Episode>;
   me: User;
-  movie?: Maybe<Movie>;
+  movie: Movie;
   searchContent: Array<SearchItem>;
   season?: Maybe<Season>;
   tv?: Maybe<Tv>;
@@ -590,42 +590,37 @@ export type MovieQueryVariables = {
 };
 
 export type MovieQuery = { __typename?: 'Query' } & {
-  movie?: Maybe<
-    { __typename?: 'Movie' } & Pick<
-      Movie,
-      | 'id'
-      | 'title'
-      | 'overview'
-      | 'release_date'
-      | 'poster_path'
-      | 'backdrop_path'
-      | 'vote_average'
-      | 'vote_count'
-    > & {
-        watched: { __typename?: 'WatchedCursor' } & Pick<
-          WatchedCursor,
-          'cursor' | 'hasMore'
-        > & {
-            watched: Array<
-              { __typename?: 'Watched' } & Pick<Watched, 'id' | 'createdAt'> & {
-                  tvData?: Maybe<
-                    { __typename?: 'TvData' } & Pick<
-                      TvData,
-                      'season' | 'episode'
-                    >
-                  >;
-                  rating?: Maybe<
-                    { __typename?: 'Rating' } & Pick<Rating, 'id' | 'value'>
-                  >;
-                  review?: Maybe<
-                    { __typename?: 'Review' } & Pick<Review, 'id' | 'body'>
-                  >;
-                  user: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
-                }
-            >;
-          };
-      }
-  >;
+  movie: { __typename?: 'Movie' } & Pick<
+    Movie,
+    | 'id'
+    | 'title'
+    | 'overview'
+    | 'release_date'
+    | 'poster_path'
+    | 'backdrop_path'
+    | 'vote_average'
+    | 'vote_count'
+  > & {
+      watched: { __typename?: 'WatchedCursor' } & Pick<
+        WatchedCursor,
+        'cursor' | 'hasMore'
+      > & {
+          watched: Array<
+            { __typename?: 'Watched' } & Pick<Watched, 'id' | 'createdAt'> & {
+                tvData?: Maybe<
+                  { __typename?: 'TvData' } & Pick<TvData, 'season' | 'episode'>
+                >;
+                rating?: Maybe<
+                  { __typename?: 'Rating' } & Pick<Rating, 'id' | 'value'>
+                >;
+                review?: Maybe<
+                  { __typename?: 'Review' } & Pick<Review, 'id' | 'body'>
+                >;
+                user: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
+              }
+          >;
+        };
+    };
 };
 
 export type WatchedQueryVariables = {
