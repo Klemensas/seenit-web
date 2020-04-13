@@ -23,7 +23,7 @@ const renderOption = (
     <MenuItem
       active={modifiers.active}
       key={item.id}
-      text={{ label }}
+      text={label}
       onClick={handleClick}
     />
   );
