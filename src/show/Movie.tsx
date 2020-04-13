@@ -324,7 +324,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
         </div>
 
         <div>
-          <h2 className="bp3-heading">Reviews</h2>
+          <h2 className="bp3-heading">Recent reviews</h2>
           <div>
             {(watched?.watched || []).map(
               ({ id, createdAt, review, rating, user }) => (
