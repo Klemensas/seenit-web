@@ -39,24 +39,56 @@ mutation AddWatched(
   addWatched(
     itemId: $itemId
     mediaType: $mediaType
+    createdAt: $createdAt
     rating: $rating
     review: $review
-    createdAt: $createdAt
     tvData: $tvData
   ) {
     id
     itemType
     createdAt
     rating {
+      id
       value
     }
     review {
+      id
       body
     }
     tvData {
       season
       episode
     }
+  }
+}
+
+mutation EditWatched(
+  $id: ID!
+  $createdAt: Float!
+  $rating: RatingInput
+  $review: ReviewInput
+) {
+  editWatched(
+    id: $id
+    createdAt: $createdAt
+    rating: $rating
+    review: $review
+  ) {
+    id
+    itemType
+    createdAt
+    rating {
+      id
+      value
+    }
+    review {
+      id
+      body
+    }
+    # tvData {
+    #   season
+    #   episode
+    # }
   }
 }
 

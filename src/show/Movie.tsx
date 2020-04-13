@@ -14,6 +14,8 @@ import {
   useAddWatchedMutation,
   WatchesDocument,
   useRemoveWatchedMutation,
+  useEditWatchedMutation,
+  TmdbMediaType,
 } from '../graphql';
 import Rating from '../common/Rating';
 import {
@@ -44,9 +46,14 @@ type Params = {
   id: string;
 };
 
+type EditingSeen =
+  | null
+  | { isEditing: false }
+  | { isEditing: true; item: WatchesQuery['watches']['watched'][0] };
+
 export default function Movie({ match }: RouteComponentProps<Params>) {
   const { id } = useParams<Params>();
-  const [showSeenForm, setShowSeenForm] = useState(false);
+  const [editingSeen, setEditingSeen] = useState<EditingSeen>(null);
   const [deleteAlert, setDeleteAlert] = useState<{
     target: string | null;
     isLoading: boolean;
@@ -93,10 +100,15 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
             ...watches,
             watched: [watchedItem, ...watches.watched],
           },
-          // watched:
-          // ...watches,
         },
       });
+    },
+  });
+  const [editWatched] = useEditWatchedMutation({
+    update: cache => {
+      // GC potentially removed content like ratings.
+      // TODO: investigate more how apollo gc is triggered to potentially handle this automatically
+      cache.gc();
     },
   });
   const [
@@ -155,7 +167,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
         <Button
           intent={Intent.PRIMARY}
           large
-          onClick={() => setShowSeenForm(true)}
+          onClick={() => setEditingSeen({ isEditing: false })}
         >
           Seen it
         </Button>
@@ -163,14 +175,62 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
           className="fluid-dialog"
           title={`Seen ${data.movie.title}`}
           canOutsideClickClose={false}
-          onClose={() => setShowSeenForm(false)}
-          isOpen={showSeenForm}
+          onClose={() => setEditingSeen(null)}
+          isOpen={!!editingSeen}
           lazy={true}
         >
           <SeenMovieForm
             item={data.movie}
+            values={
+              editingSeen?.isEditing
+                ? {
+                    createdAt: editingSeen.item.createdAt,
+                    review: editingSeen.item.review?.body || '',
+                    rating: editingSeen.item.rating?.value,
+                  }
+                : undefined
+            }
             isLoading={false}
-            onSubmit={addWatched}
+            onSubmit={({ createdAt, rating, review }) => {
+              if (editingSeen?.isEditing) {
+                editWatched({
+                  variables: {
+                    createdAt,
+                    id: editingSeen.item.id,
+                    rating: rating
+                      ? {
+                          id: editingSeen.item.rating?.id,
+                          value: rating,
+                        }
+                      : undefined,
+                    review: review
+                      ? {
+                          id: editingSeen.item.review?.id,
+                          body: review,
+                        }
+                      : undefined,
+                  },
+                }).then(() => setEditingSeen(null));
+              }
+
+              addWatched({
+                variables: {
+                  createdAt,
+                  itemId: data.movie?.id || '',
+                  mediaType: TmdbMediaType.Movie,
+                  rating: rating
+                    ? {
+                        value: rating,
+                      }
+                    : undefined,
+                  review: review
+                    ? {
+                        body: review,
+                      }
+                    : undefined,
+                },
+              });
+            }}
           />
         </Dialog>
         <Switch>
@@ -180,80 +240,83 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
         </Switch>
         <div>
           <h2 className="bp3-heading">Your last viewings</h2>
-          {userWatched?.data?.watches &&
-            userWatched.data.watches.watched.map(
-              ({ id, createdAt, review, rating }) => (
-                <Card key={id} elevation={Elevation.ONE} className="mb-2">
-                  <div className="flex flex-content-between flex-items-center">
-                    <div>
-                      <span>Seen </span>
-                      <span className="bp3-text-muted mr-2">
-                        {formatDistanceStrict(createdAt, Date.now(), {
-                          addSuffix: true,
-                        })}
-                      </span>
-                      {rating && <Rating value={rating.value} />}
-                      {!rating && (
-                        <Button icon="star" small>
-                          Rate
-                        </Button>
-                      )}
-                    </div>
-                    <div>
-                      <ButtonGroup>
-                        <Button icon="edit" small>
-                          Edit
-                        </Button>
-
-                        <Button
-                          icon="trash"
-                          small
-                          loading={loadingRemoveWatched}
-                          intent={Intent.DANGER}
-                          onClick={() =>
-                            setDeleteAlert({ target: id, isLoading: false })
-                          }
-                        >
-                          Remove
-                        </Button>
-                        <BlockingAlert
-                          cancelButtonText="Cancel"
-                          confirmButtonText="Remove"
-                          icon="trash"
-                          intent={Intent.DANGER}
-                          isOpen={!!deleteAlert.target}
-                          isLoading={!!deleteAlert.isLoading}
-                          onCancel={() =>
-                            setDeleteAlert({ target: null, isLoading: false })
-                          }
-                          onConfirm={async () => {
-                            if (!deleteAlert.target) return;
-
-                            setDeleteAlert({ ...deleteAlert, isLoading: true });
-                            await removeWatched({
-                              variables: { itemId: deleteAlert.target },
-                            });
-                            setDeleteAlert({ target: null, isLoading: false });
-                          }}
-                        >
-                          <p>
-                            Are you sure you want to remove this watched entry?
-                            <br />
-                            <br />
-                            <i>
-                              This will also remove the associated rating and
-                              review if any. Removing cannot be undone.
-                            </i>
-                          </p>
-                        </BlockingAlert>
-                      </ButtonGroup>
-                    </div>
+          {userWatched?.data?.watches?.watched.map(
+            ({ id, createdAt, review, rating }, i, watchedList) => (
+              <Card key={id} elevation={Elevation.ONE} className="mb-2">
+                <div className="flex flex-content-between flex-items-center">
+                  <div>
+                    <span>Seen </span>
+                    <span className="bp3-text-muted mr-2">
+                      {formatDistanceStrict(createdAt, Date.now(), {
+                        addSuffix: true,
+                      })}
+                    </span>
+                    {rating && <Rating value={rating.value} />}
                   </div>
-                  {review && <p>{review.body}</p>}
-                  {!review && <p className="bp3-text-muted">No review yet</p>}
-                </Card>
-              ),
-            )}
+                  <div>
+                    <ButtonGroup>
+                      <Button
+                        icon="edit"
+                        small
+                        onClick={() =>
+                          setEditingSeen({
+                            isEditing: true,
+                            item: watchedList[i],
+                          })
+                        }
+                      >
+                        Edit
+                      </Button>
+
+                      <Button
+                        icon="trash"
+                        small
+                        loading={loadingRemoveWatched}
+                        intent={Intent.DANGER}
+                        onClick={() =>
+                          setDeleteAlert({ target: id, isLoading: false })
+                        }
+                      >
+                        Remove
+                      </Button>
+                      <BlockingAlert
+                        cancelButtonText="Cancel"
+                        confirmButtonText="Remove"
+                        icon="trash"
+                        intent={Intent.DANGER}
+                        isOpen={!!deleteAlert.target}
+                        isLoading={!!deleteAlert.isLoading}
+                        onCancel={() =>
+                          setDeleteAlert({ target: null, isLoading: false })
+                        }
+                        onConfirm={async () => {
+                          if (!deleteAlert.target) return;
+
+                          setDeleteAlert({ ...deleteAlert, isLoading: true });
+                          await removeWatched({
+                            variables: { itemId: deleteAlert.target },
+                          });
+                          setDeleteAlert({ target: null, isLoading: false });
+                        }}
+                      >
+                        <p>
+                          Are you sure you want to remove this watched entry?
+                          <br />
+                          <br />
+                          <i>
+                            This will also remove the associated rating and
+                            review if any. Removing cannot be undone.
+                          </i>
+                        </p>
+                      </BlockingAlert>
+                    </ButtonGroup>
+                  </div>
+                </div>
+                {review && <p>{review.body}</p>}
+                {!review && <p className="bp3-text-muted">No review yet</p>}
+              </Card>
+            ),
+          )}
           {userWatched?.data?.watches?.hasMore && (
             <Button
               text="Show more"
@@ -288,7 +351,7 @@ export default function Movie({ match }: RouteComponentProps<Params>) {
             {watched?.hasMore && (
               <Button
                 text="Show more"
-                // onClick={loadMore(fetchMore, { id, cursor })}
+                onClick={loadMore(fetchMore, { id, cursor })}
               />
             )}
           </div>

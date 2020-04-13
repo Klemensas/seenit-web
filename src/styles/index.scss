@@ -136,6 +136,12 @@ code {
   }
 }
 
+.seen-rating {
+  min-height: $pt-button-height-small;
+  display: inline-flex !important;
+  align-items: center;
+}
+
 @keyframes grow-card {
 
   // 40% {

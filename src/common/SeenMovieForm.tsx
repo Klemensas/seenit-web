@@ -1,28 +1,37 @@
 import * as React from 'react';
-import { MutationFunction } from '@apollo/client';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import { FormGroup, TextArea, Button, Intent } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 
-import {
-  TmdbMediaType,
-  MovieQuery,
-  AddWatchedMutation,
-  AddWatchedMutationVariables,
-} from '../graphql';
+import { MovieQuery } from '../graphql';
 import RatingInput from './RatingInput';
+
+export type WatchedValues = {
+  review: string;
+  rating?: number;
+  createdAt: number;
+};
 
 interface Props {
   item: NonNullable<MovieQuery['movie']>;
-  onSubmit: MutationFunction<AddWatchedMutation, AddWatchedMutationVariables>;
+  values?: WatchedValues;
+  onSubmit: (
+    values: WatchedValues,
+    formActions: FormikHelpers<WatchedValues>,
+  ) => void;
   isLoading: boolean;
 }
 
-const SeenMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
+const SeenMovieForm: React.FC<Props> = ({
+  item,
+  onSubmit,
+  isLoading,
+  values = { review: '', createdAt: Date.now() },
+}) => {
   return (
     <React.Fragment>
       <div className="flex p-3">
-        {item.poster_path ? (
+        {item.poster_path && (
           <div className="pr-3">
             <img
               src={`https://image.tmdb.org/t/p/w185${item.poster_path}`}
@@ -30,40 +39,11 @@ const SeenMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
               className="img-responsive"
             />
           </div>
-        ) : null}
-        {/* <div style={{ padding: '0 0.5em' }}>
-          Did you enjoy watching {item.title}?
-        </div> */}
-        <Formik<{
-          review: string;
-          rating: undefined | number;
-          createdAt: number;
-        }>
+        )}
+        <Formik<WatchedValues>
           enableReinitialize
-          initialValues={{
-            review: '',
-            rating: undefined,
-            createdAt: Date.now(),
-          }}
-          onSubmit={(values, actions) => {
-            onSubmit({
-              variables: {
-                ...values,
-                itemId: item.id,
-                mediaType: TmdbMediaType.Movie,
-                rating: values.rating
-                  ? {
-                      value: values.rating,
-                    }
-                  : undefined,
-                review: values.review
-                  ? {
-                      body: values.review,
-                    }
-                  : undefined,
-              },
-            }).then(() => actions.setSubmitting(false));
-          }}
+          initialValues={values}
+          onSubmit={onSubmit}
         >
           {({ values, handleChange, handleSubmit, setFieldValue }) => (
             <form className="flex-grow" onSubmit={handleSubmit}>
@@ -91,13 +71,25 @@ const SeenMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
                 />
               </FormGroup>
               <FormGroup label="Rating" labelFor="rating">
-                <p>
-                  <RatingInput
-                    value={values.rating || 0}
-                    onChange={value => setFieldValue('rating', value)}
-                  />{' '}
-                  {values.rating || '?'}/5
-                </p>
+                <div className="flex flex-content-between flex-items-center">
+                  <div>
+                    <RatingInput
+                      value={values.rating || 0}
+                      className="seen-rating"
+                      onChange={value => setFieldValue('rating', value)}
+                    />{' '}
+                    <span>{values.rating || '?'}/5</span>
+                  </div>
+                  {values.rating && (
+                    <Button
+                      icon="cross"
+                      intent={Intent.DANGER}
+                      minimal
+                      small
+                      onClick={() => setFieldValue('rating', undefined)}
+                    />
+                  )}
+                </div>
               </FormGroup>
               <Button
                 type="submit"

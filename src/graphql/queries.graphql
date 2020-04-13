@@ -20,9 +20,11 @@ query User($name: String, $id: ID, $cursor: String) {
         createdAt
         userId
         rating {
+          id
           value
         }
         review {
+          id
           body
         }
         tvData {
@@ -73,9 +75,11 @@ query Movie($id: ID, $cursor: String) {
           episode
         }
         rating {
+          id
           value
         }
         review {
+          id
           body
         }
         user {
@@ -96,9 +100,11 @@ query Watched($id: ID!) {
       episode
     }
     rating {
+      id
       value
     }
     review {
+      id
       body
     }
     user {
@@ -125,9 +131,11 @@ query Watches($userId: ID, $itemId: ID, $itemType: ItemType, $cursor: String) {
         episode
       }
       rating {
+        id
         value
       }
       review {
+        id
         body
       }
       user {
