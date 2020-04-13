@@ -129,6 +129,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   _?: Maybe<Scalars['Boolean']>;
   addWatched: Watched;
+  editWatched: Watched;
   login: LocalAuth;
   logout?: Maybe<Scalars['Boolean']>;
   register: LocalAuth;
@@ -142,6 +143,13 @@ export type MutationAddWatchedArgs = {
   review?: Maybe<ReviewInput>;
   tvData?: Maybe<TvDataInput>;
   createdAt?: Maybe<Scalars['Float']>;
+};
+
+export type MutationEditWatchedArgs = {
+  id: Scalars['ID'];
+  createdAt?: Maybe<Scalars['Float']>;
+  rating?: Maybe<RatingInput>;
+  review?: Maybe<ReviewInput>;
 };
 
 export type MutationLoginArgs = {
@@ -233,6 +241,7 @@ export type Rating = {
 };
 
 export type RatingInput = {
+  id?: Maybe<Scalars['ID']>;
   value: Scalars['Float'];
 };
 
@@ -248,6 +257,7 @@ export type Review = {
 };
 
 export type ReviewInput = {
+  id?: Maybe<Scalars['ID']>;
   body: Scalars['String'];
 };
 
@@ -483,11 +493,28 @@ export type AddWatchedMutation = { __typename?: 'Mutation' } & {
     Watched,
     'id' | 'itemType' | 'createdAt'
   > & {
-      rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
-      review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
+      rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'id' | 'value'>>;
+      review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'id' | 'body'>>;
       tvData?: Maybe<
         { __typename?: 'TvData' } & Pick<TvData, 'season' | 'episode'>
       >;
+    };
+};
+
+export type EditWatchedMutationVariables = {
+  id: Scalars['ID'];
+  createdAt: Scalars['Float'];
+  rating?: Maybe<RatingInput>;
+  review?: Maybe<ReviewInput>;
+};
+
+export type EditWatchedMutation = { __typename?: 'Mutation' } & {
+  editWatched: { __typename?: 'Watched' } & Pick<
+    Watched,
+    'id' | 'itemType' | 'createdAt'
+  > & {
+      rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'id' | 'value'>>;
+      review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'id' | 'body'>>;
     };
 };
 
@@ -526,10 +553,10 @@ export type UserQuery = { __typename?: 'Query' } & {
               'id' | 'createdAt' | 'userId' | 'itemType'
             > & {
                 rating?: Maybe<
-                  { __typename?: 'Rating' } & Pick<Rating, 'value'>
+                  { __typename?: 'Rating' } & Pick<Rating, 'id' | 'value'>
                 >;
                 review?: Maybe<
-                  { __typename?: 'Review' } & Pick<Review, 'body'>
+                  { __typename?: 'Review' } & Pick<Review, 'id' | 'body'>
                 >;
                 tvData?: Maybe<
                   { __typename?: 'TvData' } & Pick<TvData, 'season' | 'episode'>
@@ -588,10 +615,10 @@ export type MovieQuery = { __typename?: 'Query' } & {
                     >
                   >;
                   rating?: Maybe<
-                    { __typename?: 'Rating' } & Pick<Rating, 'value'>
+                    { __typename?: 'Rating' } & Pick<Rating, 'id' | 'value'>
                   >;
                   review?: Maybe<
-                    { __typename?: 'Review' } & Pick<Review, 'body'>
+                    { __typename?: 'Review' } & Pick<Review, 'id' | 'body'>
                   >;
                   user: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
                 }
@@ -610,8 +637,8 @@ export type WatchedQuery = { __typename?: 'Query' } & {
       tvData?: Maybe<
         { __typename?: 'TvData' } & Pick<TvData, 'season' | 'episode'>
       >;
-      rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
-      review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
+      rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'id' | 'value'>>;
+      review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'id' | 'body'>>;
       user: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
     };
 };
@@ -633,8 +660,12 @@ export type WatchesQuery = { __typename?: 'Query' } & {
             tvData?: Maybe<
               { __typename?: 'TvData' } & Pick<TvData, 'season' | 'episode'>
             >;
-            rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
-            review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
+            rating?: Maybe<
+              { __typename?: 'Rating' } & Pick<Rating, 'id' | 'value'>
+            >;
+            review?: Maybe<
+              { __typename?: 'Review' } & Pick<Review, 'id' | 'body'>
+            >;
             user: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
           }
       >;
@@ -824,18 +855,20 @@ export const AddWatchedDocument = gql`
     addWatched(
       itemId: $itemId
       mediaType: $mediaType
+      createdAt: $createdAt
       rating: $rating
       review: $review
-      createdAt: $createdAt
       tvData: $tvData
     ) {
       id
       itemType
       createdAt
       rating {
+        id
         value
       }
       review {
+        id
         body
       }
       tvData {
@@ -892,6 +925,79 @@ export type AddWatchedMutationResult = ApolloReactCommon.MutationResult<
 export type AddWatchedMutationOptions = ApolloReactCommon.BaseMutationOptions<
   AddWatchedMutation,
   AddWatchedMutationVariables
+>;
+export const EditWatchedDocument = gql`
+  mutation EditWatched(
+    $id: ID!
+    $createdAt: Float!
+    $rating: RatingInput
+    $review: ReviewInput
+  ) {
+    editWatched(
+      id: $id
+      createdAt: $createdAt
+      rating: $rating
+      review: $review
+    ) {
+      id
+      itemType
+      createdAt
+      rating {
+        id
+        value
+      }
+      review {
+        id
+        body
+      }
+    }
+  }
+`;
+export type EditWatchedMutationFn = ApolloReactCommon.MutationFunction<
+  EditWatchedMutation,
+  EditWatchedMutationVariables
+>;
+
+/**
+ * __useEditWatchedMutation__
+ *
+ * To run a mutation, you first call `useEditWatchedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditWatchedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editWatchedMutation, { data, loading, error }] = useEditWatchedMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      createdAt: // value for 'createdAt'
+ *      rating: // value for 'rating'
+ *      review: // value for 'review'
+ *   },
+ * });
+ */
+export function useEditWatchedMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    EditWatchedMutation,
+    EditWatchedMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<
+    EditWatchedMutation,
+    EditWatchedMutationVariables
+  >(EditWatchedDocument, baseOptions);
+}
+export type EditWatchedMutationHookResult = ReturnType<
+  typeof useEditWatchedMutation
+>;
+export type EditWatchedMutationResult = ApolloReactCommon.MutationResult<
+  EditWatchedMutation
+>;
+export type EditWatchedMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  EditWatchedMutation,
+  EditWatchedMutationVariables
 >;
 export const RemoveWatchedDocument = gql`
   mutation RemoveWatched($itemId: ID!) {
@@ -1009,9 +1115,11 @@ export const UserDocument = gql`
           createdAt
           userId
           rating {
+            id
             value
           }
           review {
+            id
             body
           }
           tvData {
@@ -1109,9 +1217,11 @@ export const MovieDocument = gql`
             episode
           }
           rating {
+            id
             value
           }
           review {
+            id
             body
           }
           user {
@@ -1179,9 +1289,11 @@ export const WatchedDocument = gql`
         episode
       }
       rating {
+        id
         value
       }
       review {
+        id
         body
       }
       user {
@@ -1259,9 +1371,11 @@ export const WatchesDocument = gql`
           episode
         }
         rating {
+          id
           value
         }
         review {
+          id
           body
         }
         user {
