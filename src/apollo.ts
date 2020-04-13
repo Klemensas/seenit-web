@@ -17,7 +17,7 @@ import typePolicies from './graphql/typePolicies';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   const isAuthenticationError = graphQLErrors?.some(
-    ({ extensions = {} }) => (extensions.code = 'UNAUTHENTICATED'),
+    ({ extensions = {} }) => extensions.code === 'UNAUTHENTICATED',
   );
 
   if (isAuthenticationError) {
