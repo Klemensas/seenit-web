@@ -22,12 +22,12 @@ interface Props {
   isLoading: boolean;
 }
 
-const SeenMovieForm: React.FC<Props> = ({
+export default function WatchedMovieForm({
   item,
   onSubmit,
   isLoading,
   values = { review: '', createdAt: Date.now() },
-}) => {
+}: Props) {
   return (
     <React.Fragment>
       <div className="flex p-3">
@@ -106,6 +106,4 @@ const SeenMovieForm: React.FC<Props> = ({
       </div>
     </React.Fragment>
   );
-};
-
-export default SeenMovieForm;
+}

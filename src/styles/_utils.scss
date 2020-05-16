@@ -1,68 +1,58 @@
-.p {
-  &-3 {
-    padding: 12px;
-  }
+$baseSize: 4px;
+$sizes: (
+  '0': 0,
+  '1': $baseSize * 1,
+  '2': $baseSize * 2,
+  '3': $baseSize * 4,
+  '4': $baseSize * 8,
+) !default;
 
-  &t {
-    &-3 {
-      padding-top: 12px;
+$spacings: (
+  'm': 'margin',
+  'p': 'padding',
+);
+
+$directions: (
+  'y': (
+    'top',
+    'bottom',
+  ),
+  'x': (
+    'left',
+    'right',
+  ),
+  't': (
+    'top',
+  ),
+  'r': (
+    'right',
+  ),
+  'b': (
+    'bottom',
+  ),
+  'l': (
+    'left',
+  ),
+);
+
+@each $shorthand, $property in $spacings {
+  .#{$shorthand} {
+    @each $size, $value in $sizes {
+      &-#{$size} {
+        #{$property}: $value;
+      }
     }
-  }
 
-  &r {
-    &-2 {
-      padding-right: 8px;
-    }
-
-    &-3 {
-      padding-right: 12px;
-    }
-  }
-
-  &b {
-    &-2 {
-      padding-bottom: 8px;
-    }
-  }
-
-  &y {
-    &-4 {
-      padding-top: 24px;
-      padding-bottom: 24px;
-    }
-  }
-}
-
-.m {
-  &r {
-    &-2 {
-      margin-right: 8px;
-    }
-  }
-
-  &b {
-    &-2 {
-      margin-bottom: 8px;
-    }
-  }
-
-  &l {
-    &-2 {
-      margin-left: 8px;
-    }
-  }
-
-  &x {
-    &-3 {
-      margin-left: 12px;
-      margin-right: 12px;
-    }
-  }
-
-  &y {
-    &-4 {
-      margin-top: 24px;
-      margin-bottom: 24px;
+    @each $direction, $modifiers in $directions {
+      &#{$direction} {
+        @each $size, $value in $sizes {
+          &-#{$size} {
+            @each $modifier in $modifiers {
+              #{$property}-#{$modifier}: $value;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -74,6 +64,12 @@
 
   &-left {
     text-align: left;
+  }
+}
+
+.w {
+  &-100 {
+    width: 100%;
   }
 }
 

@@ -1,11 +1,7 @@
-import {
-  ApolloClient,
-  ApolloLink,
-  InMemoryCache,
-  HttpLink,
-} from '@apollo/client';
+import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
 import { onError } from '@apollo/link-error';
 import { setContext } from '@apollo/link-context';
+import { BatchHttpLink } from '@apollo/link-batch-http';
 // import { persistCache } from 'apollo-cache-persist';
 
 import { resolvers, typeDefs } from './graphql/resolvers';
@@ -52,8 +48,9 @@ export const cache = new InMemoryCache({
   // },
 });
 
-const httpLink = new HttpLink({
+const httpLink = new BatchHttpLink({
   uri: `http://localhost:9000/graphql`,
+  // uri: `https://server.seenit.show/graphql`,
 });
 
 const authLink = setContext(request => {

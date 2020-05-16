@@ -7,6 +7,7 @@ export interface PossibleTypesResultData {
 const result: PossibleTypesResultData = {
   possibleTypes: {
     Item: ['Movie', 'Tv'],
+    TvItem: ['Season', 'Episode'],
     TmdbMedia: ['TmdbMovie', 'TmdbTv'],
   },
 };

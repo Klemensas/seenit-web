@@ -1,9 +1,9 @@
-@import "~normalize.css";
-@import "~@blueprintjs/core/lib/css/blueprint.css";
-@import "~@blueprintjs/core/src/common/variables";
+@import '~normalize.css';
+@import '~@blueprintjs/core/lib/css/blueprint.css';
+@import '~@blueprintjs/core/src/common/variables';
 
-@import "utils";
-@import "grid";
+@import 'utils';
+@import 'grid';
 
 body {
   overflow-y: scroll;
@@ -32,11 +32,20 @@ code {
   max-width: 100%;
 }
 
-
 .card-watched {
   padding: 0;
   position: relative;
   overflow: hidden;
+
+  &.fill-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &.selected {
+    box-shadow: 0px 0px 0px 3px rgba($pt-intent-primary, 0.75);
+  }
 
   .title {
     position: absolute;
@@ -44,14 +53,23 @@ code {
     width: 100%;
     color: white;
     text-shadow: 1px 1px black;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.0) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.4) 100%);
-
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
   }
 
   &-footer {
     // background: rgba(0, 0, 0, 0.4);
     // box-shadow: 0 -3px 12px 4px rgba(0, 0, 0, 0.4);
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0) 100%
+    );
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -142,8 +160,11 @@ code {
   align-items: center;
 }
 
-@keyframes grow-card {
+.bp3-panel-stack-view {
+  position: relative;
+}
 
+@keyframes grow-card {
   // 40% {
   // left: 50%;
   // top: 50%;
