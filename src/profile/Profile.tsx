@@ -16,6 +16,7 @@ import {
 } from '../graphql';
 import Rating from '../common/Rating';
 import InfiniteScroll from '../common/InfiniteScroll';
+import { formatTvString } from '../common/helpers/watched';
 
 const loadMore = (
   fetchMore: ObservableQueryFields<UserQuery, UserQueryVariables>['fetchMore'],
@@ -72,7 +73,7 @@ export default function Profile() {
       <div className="grid grid-4">
         {watched.map(
           (
-            { id, item, itemType, rating, review, tvData, createdAt },
+            { id, item, itemType, rating, review, tvItem, createdAt },
             index,
           ) => {
             if (!item) return null;
@@ -124,11 +125,7 @@ export default function Profile() {
                       <strong className="bp3-text-large bp3-text-overflow-ellipsis pr-2">
                         {name}
                       </strong>
-                      {tvData && (
-                        <div>
-                          S{tvData.season}E{tvData.episode}
-                        </div>
-                      )}
+                      <div>{formatTvString(tvItem)}</div>
                     </div>
                     <p className="bp3-text-small card-watched-muted">
                       {formatDistanceStrict(createdAt, Date.now(), {

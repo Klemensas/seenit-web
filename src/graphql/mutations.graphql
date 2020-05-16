@@ -30,19 +30,21 @@ mutation Logout {
 
 mutation AddWatched(
   $itemId: ID!
-  $mediaType: TmdbMediaType!
+  $itemType: ItemType!
   $createdAt: Float!
   $rating: RatingInput
   $review: ReviewInput
-  $tvData: TvDataInput
+  $tvItemId: ID
+  $tvItemType: TvItemType
 ) {
   addWatched(
     itemId: $itemId
-    mediaType: $mediaType
+    itemType: $itemType
     createdAt: $createdAt
     rating: $rating
     review: $review
-    tvData: $tvData
+    tvItemId: $tvItemId
+    tvItemType: $tvItemType
   ) {
     id
     itemType
@@ -55,9 +57,20 @@ mutation AddWatched(
       id
       body
     }
-    tvData {
-      season
-      episode
+    tvItemType
+    tvItem {
+      ... on Episode {
+        id
+        episode_number
+        season {
+          id
+          season_number
+        }
+      }
+      ... on Season {
+        id
+        season_number
+      }
     }
   }
 }
@@ -67,12 +80,16 @@ mutation EditWatched(
   $createdAt: Float!
   $rating: RatingInput
   $review: ReviewInput
+  $tvItemId: ID
+  $tvItemType: TvItemType
 ) {
   editWatched(
     id: $id
     createdAt: $createdAt
     rating: $rating
     review: $review
+    tvItemId: $tvItemId
+    tvItemType: $tvItemType
   ) {
     id
     itemType
@@ -84,6 +101,21 @@ mutation EditWatched(
     review {
       id
       body
+    }
+    tvItemType
+    tvItem {
+      ... on Episode {
+        id
+        episode_number
+        season {
+          id
+          season_number
+        }
+      }
+      ... on Season {
+        id
+        season_number
+      }
     }
     # tvData {
     #   season
@@ -94,4 +126,14 @@ mutation EditWatched(
 
 mutation RemoveWatched($itemId: ID!) {
   removeWatched(itemId: $itemId)
+}
+
+mutation RemoveAutoTracked($ids: [ID!]!) {
+  removeAutoTracked(ids: $ids)
+}
+
+mutation ConvertAutoTracked($ids: [ID!]!) {
+  convertAutoTracked(ids: $ids) {
+    id
+  }
 }

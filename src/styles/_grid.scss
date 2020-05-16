@@ -3,8 +3,16 @@
 
   &-4 {
     padding: 10px;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(auto-fit, 200px));
     grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+  }
+
+  &-8 {
+    padding: 12px;
+    // grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+    grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+    grid-gap: 12px;
     grid-auto-rows: minmax(100px, auto);
   }
 }

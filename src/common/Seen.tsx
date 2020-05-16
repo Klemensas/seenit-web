@@ -1,20 +1,36 @@
 import React from 'react';
 import { Card } from '@blueprintjs/core';
 import { formatDistanceStrict } from 'date-fns';
-import { UserQuery } from '../graphql';
+import { ItemType, Movie, Tv, Season, Episode } from '../graphql';
 import { Link } from 'react-router-dom';
+import { formatTvString } from './helpers/watched';
+import { RelativeDate } from './RelativeDate';
+
+type ItemData =
+  | Pick<Movie, 'id' | 'title' | 'backdrop_path'>
+  | Pick<Tv, 'id' | 'name' | 'backdrop_path'>;
+
+type SeasonData = Pick<Season, 'id' | 'season_number'>;
+type TvItemData =
+  | SeasonData
+  | (Pick<Episode, 'id' | 'episode_number'> & { season: SeasonData });
 
 export default function Seen({
+  type,
   item,
   date,
+  tvItem,
 }: {
-  item: UserQuery['user']['watched']['watched'][0]['item'];
+  type: ItemType;
+  item: ItemData;
+  tvItem?: TvItemData;
   date?: number | Date;
 }) {
   const name = 'title' in item ? item.title : item.name;
+  const route = type === ItemType.Movie ? 'movie' : 'tv';
 
   return (
-    <Link to={`/movie/${item.id}`}>
+    <Link to={`/${route}/${item.id}`}>
       <Card className="card-watched">
         <div style={{ position: 'relative' }}>
           <img
@@ -31,10 +47,11 @@ export default function Seen({
             <strong className="bp3-text-large bp3-text-overflow-ellipsis pr-2">
               {name}
             </strong>
+            <div>{formatTvString(tvItem)}</div>
           </div>
           {date && (
             <p className="bp3-text-small card-watched-muted">
-              {formatDistanceStrict(date, Date.now(), { addSuffix: true })}
+              <RelativeDate date={date} />
             </p>
           )}
         </div>

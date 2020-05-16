@@ -89,7 +89,7 @@ export function SearchPage() {
   return (
     <Search
       setSelected={({ type, id }) => {
-        history.push(`${type?.toLowerCase()}/${id}`);
+        history.push(`/${type?.toLowerCase()}/${id}`);
       }}
     />
   );

@@ -1,4 +1,4 @@
-import { WatchesQuery, MovieQuery } from '.';
+import { WatchesQuery, MovieQuery, ReviewsQuery } from '.';
 
 export const mergeWatches = (
   prev: WatchesQuery,
@@ -25,6 +25,19 @@ export const mergeMovie = (prev: MovieQuery, next?: MovieQuery): MovieQuery =>
               ...next.movie.watched.watched,
             ],
           },
+        },
+      }
+    : prev;
+
+export const mergeReviews = (
+  prev: ReviewsQuery,
+  next?: ReviewsQuery,
+): ReviewsQuery =>
+  next
+    ? {
+        reviews: {
+          ...next.reviews,
+          reviews: [...prev.reviews.reviews, ...next.reviews.reviews],
         },
       }
     : prev;

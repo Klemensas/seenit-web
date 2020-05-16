@@ -7,48 +7,112 @@ query Auth {
   }
 }
 
+# fragment TvData on Watched {
+#   tvItemType
+#   tvItem
+# }
+
+fragment WatchedProps on Watched {
+  id
+  createdAt
+  tvItemType
+  tvItem {
+    ...WatchedTvItemProps
+  }
+  rating {
+    id
+    value
+  }
+  review {
+    id
+    body
+  }
+  user {
+    id
+    name
+  }
+}
+
+fragment WatchedItemProps on Watched {
+  itemType
+  item {
+    ... on Movie {
+      id
+      title
+      release_date
+      poster_path
+      backdrop_path
+    }
+    ... on Tv {
+      id
+      name
+      first_air_date
+      poster_path
+      backdrop_path
+    }
+  }
+}
+
+fragment WatchedTvItemProps on TvItem {
+  ... on Episode {
+    id
+    episode_number
+    season {
+      id
+      season_number
+    }
+  }
+  ... on Season {
+    id
+    season_number
+  }
+}
+
+fragment WatchedCursorProps on WatchedCursor {
+  cursor
+  hasMore
+  # filter
+  watched {
+    ...WatchedProps
+  }
+}
+
+fragment WatchedCursorWithItemsProps on WatchedCursor {
+  cursor
+  hasMore
+  # filter
+  watched {
+    ...WatchedProps
+    ...WatchedItemProps
+  }
+}
+
+fragment SeasonProps on Season {
+  id
+  name
+  overview
+  episode_count
+  air_date
+  poster_path
+  season_number
+  episodes {
+    id
+    name
+    overview
+    episode_number
+    air_date
+    vote_average
+    vote_count
+  }
+}
+
 query User($name: String, $id: ID, $cursor: String) {
   user(name: $name, id: $id) {
     id
     name
     createdAt
     watched(cursor: $cursor) {
-      cursor
-      hasMore
-      watched {
-        id
-        createdAt
-        userId
-        rating {
-          id
-          value
-        }
-        review {
-          id
-          body
-        }
-        tvData {
-          season
-          episode
-        }
-        itemType
-        item {
-          ... on Movie {
-            id
-            title
-            release_date
-            poster_path
-            backdrop_path
-          }
-          ... on Tv {
-            id
-            name
-            first_air_date
-            poster_path
-            backdrop_path
-          }
-        }
-      }
+      ...WatchedCursorWithItemsProps
     }
   }
 }
@@ -64,83 +128,92 @@ query Movie($id: ID, $cursor: String) {
     vote_average
     vote_count
     watched(cursor: $cursor, filter: "Reviewed") {
-      cursor
-      hasMore
-      # filter
-      watched {
-        id
-        createdAt
-        tvData {
-          season
-          episode
-        }
-        rating {
-          id
-          value
-        }
-        review {
-          id
-          body
-        }
-        user {
-          id
-          name
-        }
-      }
+      ...WatchedCursorProps
+    }
+  }
+}
+
+query Tv($id: ID, $cursor: String) {
+  tv(id: $id) {
+    id
+    name
+    overview
+    first_air_date
+    poster_path
+    backdrop_path
+    vote_average
+    vote_count
+    seasons {
+      ...SeasonProps
+    }
+    watched(cursor: $cursor, filter: "Reviewed") {
+      ...WatchedCursorProps
     }
   }
 }
 
 query Watched($id: ID!) {
   watched(id: $id) {
-    id
-    createdAt
-    tvData {
-      season
-      episode
-    }
-    rating {
-      id
-      value
-    }
-    review {
-      id
-      body
-    }
-    user {
-      id
-      name
-    }
+    ...WatchedProps
   }
 }
 
-query Watches($userId: ID, $itemId: ID, $itemType: ItemType, $cursor: String) {
+query Watches(
+  $userId: ID
+  $itemId: ID
+  $itemType: ItemType
+  $cursor: String
+  $tvItemId: ID
+  $tvItemType: TvItemType
+) {
   watches(
     userId: $userId
     itemId: $itemId
     itemType: $itemType
     cursor: $cursor
+    tvItemId: $tvItemId
+    tvItemType: $tvItemType
+  ) {
+    ...WatchedCursorWithItemsProps
+  }
+}
+
+query Reviews(
+  $userId: ID
+  $itemId: ID
+  $itemType: ItemType
+  $cursor: String
+  $tvItemId: ID
+  $tvItemType: TvItemType
+) {
+  reviews(
+    userId: $userId
+    itemId: $itemId
+    itemType: $itemType
+    cursor: $cursor
+    tvItemId: $tvItemId
+    tvItemType: $tvItemType
   ) {
     cursor
     hasMore
-    watched {
+    reviews {
       id
-      createdAt
-      tvData {
-        season
-        episode
-      }
-      rating {
+      body
+      watched {
         id
-        value
-      }
-      review {
-        id
-        body
-      }
-      user {
-        id
-        name
+        createdAt
+        rating {
+          id
+          value
+        }
+        tvItemType
+        tvItem {
+          ...WatchedTvItemProps
+        }
+        user {
+          id
+          name
+        }
       }
     }
   }
@@ -153,5 +226,53 @@ query SearchContent($title: String!) {
     title
     release_date
     type
+  }
+}
+
+query AutoTrackedList($userId: ID!, $cursor: String) {
+  autoTrackedList(userId: $userId, cursor: $cursor) {
+    cursor
+    hasMore
+    autoTracked {
+      id
+      itemType
+      item {
+        ... on Movie {
+          id
+          title
+          release_date
+          poster_path
+          backdrop_path
+        }
+        ... on Tv {
+          id
+          name
+          first_air_date
+          poster_path
+          backdrop_path
+        }
+      }
+      tvItemType
+      tvItem {
+        ...WatchedTvItemProps
+      }
+      meta {
+        title
+        filename
+        url
+        provider
+        tvData {
+          season
+          episode
+        }
+      }
+      createdAt
+    }
+  }
+}
+
+query Seasons($itemId: ID!) {
+  seasons(itemId: $itemId) {
+    ...SeasonProps
   }
 }
