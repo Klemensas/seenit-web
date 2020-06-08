@@ -9,12 +9,15 @@ import {
   PopoverPosition,
   MenuDivider,
   Tooltip,
+  Spinner,
 } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 
-import { TvQuery } from '../graphql';
+import { TvQuery, useSeasonsQuery } from '../graphql';
 import RatingInput from './RatingInput';
 import { Suggest, ItemRenderer } from '@blueprintjs/select';
+import { TvData } from '../show/Tv/WatchedTvDialog';
+import { WatchedValues } from './WatchedForm';
 
 interface ItemSelection {
   id: string;
@@ -75,15 +78,8 @@ const renderEpisode: ItemRenderer<ItemSelection> = (
   );
 };
 
-export type WatchedValues = {
-  createdAt: number;
-  tvItemId?: string;
-  review: string;
-  rating?: number;
-};
-
 interface Props {
-  item: NonNullable<TvQuery['tv']>;
+  item: TvData;
   values?: WatchedValues;
   onSubmit: (
     values: WatchedValues,
@@ -98,16 +94,23 @@ export default function WatchedTvForm({
   isLoading,
   values = { createdAt: Date.now(), review: '' },
 }: Props) {
-  const seasons = item.seasons;
+  const { data, loading: isSeasonsLoading } = useSeasonsQuery({
+    variables: {
+      itemId: item.id,
+    },
+    skip: !!item.seasons,
+  });
+  const seasons = item.seasons || data?.seasons || [];
+
   const options = getSelectOptions(seasons);
   return (
     <React.Fragment>
       <div className="flex p-3">
-        {item.poster_path && (
+        {item.poster && (
           <div className="pr-3">
             <img
-              src={`https://image.tmdb.org/t/p/w185${item.poster_path}`}
-              alt={`Poster for ${item.name}`}
+              src={`https://image.tmdb.org/t/p/w185${item.poster}`}
+              alt={`Poster for ${item.title}`}
               className="img-responsive"
             />
           </div>
@@ -140,7 +143,9 @@ export default function WatchedTvForm({
                   selectedItem={
                     options.find(({ id }) => id === values.tvItemId) || null
                   }
-                  inputValueRenderer={({ name }) => name}
+                  inputValueRenderer={({ name, seasonName }) =>
+                    `${name} - ${seasonName}`
+                  }
                   itemRenderer={renderEpisode}
                   items={options}
                   itemListPredicate={itemFilter}
@@ -152,15 +157,20 @@ export default function WatchedTvForm({
                     usePortal: false,
                     position: PopoverPosition.BOTTOM,
                   }}
+                  disabled={isSeasonsLoading}
                   inputProps={{
                     placeholder: 'Select an episode',
-                    rightElement: (
+                    rightElement: !isSeasonsLoading ? (
                       <Tooltip content="Clear selection">
                         <Button
                           icon="cross"
                           minimal
                           onClick={() => setFieldValue('tvItemId', null)}
                         />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip content="Loading season data">
+                        <Spinner size={16} />
                       </Tooltip>
                     ),
                   }}

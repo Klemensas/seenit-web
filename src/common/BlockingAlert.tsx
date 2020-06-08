@@ -1,4 +1,4 @@
-import React, { ReactChild } from 'react';
+import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 import {
   Dialog,
@@ -36,7 +36,7 @@ export default function BlockingAlert({
   className?: string;
   intent?: Intent;
   icon?: IconName | MaybeElement;
-  children?: ReactChild;
+  children?: ReactNode;
   overlayProps?: IOverlayProps;
 }) {
   return (

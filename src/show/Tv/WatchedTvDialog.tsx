@@ -5,7 +5,6 @@ import {
   WatchesQuery,
   useAddWatchedMutation,
   useEditWatchedMutation,
-  useSeasonsQuery,
   TvItemType,
   ItemType,
   TvQuery,
@@ -14,23 +13,28 @@ import WatchedTvForm from '../../common/WatchedTvForm';
 
 export type EditingWatched =
   | null
-  | { isEditing: false }
+  | {
+      isEditing: false;
+      autoTracked?: { id: string; createdAt: number; tvItemId?: string };
+    }
   | { isEditing: true; item: WatchesQuery['watches']['watched'][0] };
+
+export type TvData = {
+  id: string;
+  title: string;
+  poster: string;
+  seasons?: TvQuery['tv']['seasons'];
+};
 
 export default function WatchedTvDialog({
   tv,
   editingWatched,
   onClose,
 }: {
-  tv: TvQuery['tv'];
+  tv: TvData;
   editingWatched: EditingWatched;
   onClose: () => void;
 }) {
-  const { data } = useSeasonsQuery({
-    variables: {
-      itemId: tv.id,
-    },
-  });
   const [addWatched, addWatchedVariables] = useAddWatchedMutation();
   const [editWatched] = useEditWatchedMutation({
     update: cache => {
@@ -40,16 +44,14 @@ export default function WatchedTvDialog({
     },
   });
 
-  if (!tv.seasons) return null;
-
   return (
     <Dialog
       className="fluid-dialog"
-      title={`Seen ${tv.name}`}
+      title={`Seen ${tv.title}`}
       canOutsideClickClose={false}
       onClose={onClose}
       isOpen={!!editingWatched}
-      lazy={true}
+      lazy
     >
       <WatchedTvForm
         item={tv}
@@ -60,6 +62,12 @@ export default function WatchedTvDialog({
                 review: editingWatched.item.review?.body || '',
                 rating: editingWatched.item.rating?.value,
                 tvItemId: editingWatched.item.tvItem?.id,
+              }
+            : editingWatched?.autoTracked
+            ? {
+                createdAt: editingWatched.autoTracked.createdAt,
+                tvItemId: editingWatched.autoTracked.tvItemId,
+                review: '',
               }
             : undefined
         }
@@ -99,6 +107,10 @@ export default function WatchedTvDialog({
               tvItemType: tvItemId ? TvItemType.Episode : undefined,
               rating: rating ? { value: rating } : undefined,
               review: review ? { body: review } : undefined,
+              autoTrackedId:
+                editingWatched && 'autoTracked' in editingWatched
+                  ? editingWatched.autoTracked?.id
+                  : undefined,
             },
           });
 

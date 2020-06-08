@@ -36,6 +36,7 @@ mutation AddWatched(
   $review: ReviewInput
   $tvItemId: ID
   $tvItemType: TvItemType
+  $autoTrackedId: ID
 ) {
   addWatched(
     itemId: $itemId
@@ -45,6 +46,7 @@ mutation AddWatched(
     review: $review
     tvItemId: $tvItemId
     tvItemType: $tvItemType
+    autoTrackedId: $autoTrackedId
   ) {
     id
     itemType
@@ -134,6 +136,6 @@ mutation RemoveAutoTracked($ids: [ID!]!) {
 
 mutation ConvertAutoTracked($ids: [ID!]!) {
   convertAutoTracked(ids: $ids) {
-    id
+    removedIds
   }
 }

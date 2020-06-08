@@ -1,42 +1,36 @@
 import React from 'react';
+import { Dialog } from '@blueprintjs/core';
 
-import { MovieQuery, TvQuery, WatchesQuery } from '../graphql';
-import WatchedMovieDialog from './Movie/WatchedMovieDialog';
-import WatchedTvDialog from './Tv/WatchedTvDialog';
-
-export type EditingWatched =
-  | null
-  | { isEditing: false }
-  | { isEditing: true; item: WatchesQuery['watches']['watched'][0] };
+import { EditingWatched } from '../common/WatchedForm';
+import WatchedMutationForm from '../common/WatchedMutationForm';
+import { TvQuery, MovieQuery } from '../graphql';
 
 export default function WatchedDialog({
-  item,
   editingWatched,
+  item,
   onClose,
 }: {
-  item: MovieQuery['movie'] | TvQuery['tv'];
   editingWatched: EditingWatched;
+  item: TvQuery['tv'] | MovieQuery['movie'];
   onClose: () => void;
 }) {
-  if (item.__typename === 'Movie') {
-    return (
-      <WatchedMovieDialog
-        movie={item}
-        editingWatched={editingWatched}
-        onClose={onClose}
-      />
-    );
-  }
+  const name = 'name' in item ? item.name : item.title;
 
-  if (item.__typename === 'Tv') {
-    return (
-      <WatchedTvDialog
-        tv={item}
+  return (
+    <Dialog
+      className="fluid-dialog"
+      title={`Seen ${name}`}
+      canOutsideClickClose={false}
+      onClose={onClose}
+      isOpen={!!editingWatched}
+      lazy
+    >
+      <WatchedMutationForm
         editingWatched={editingWatched}
-        onClose={onClose}
+        item={item}
+        afterSubmit={onClose}
       />
-    );
-  }
-
-  return null;
+      />
+    </Dialog>
+  );
 }

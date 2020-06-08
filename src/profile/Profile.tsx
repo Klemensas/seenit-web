@@ -70,7 +70,7 @@ export default function Profile() {
       hasMore={hasMore}
       loadMore={loadMore(fetchMore, { name, cursor })}
     >
-      <div className="grid grid-4">
+      <div className="grid grid-card">
         {watched.map(
           (
             { id, item, itemType, rating, review, tvItem, createdAt },
@@ -109,7 +109,7 @@ export default function Profile() {
                       width="300"
                       height="200"
                       className="img-responsive"
-                      src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
+                      src={`https://image.tmdb.org/t/p/w1280${item.poster_path}`}
                       style={{ position: 'relative' }}
                       alt=""
                     />
@@ -161,7 +161,7 @@ export default function Profile() {
                   width="300"
                   height="200"
                   className="img-responsive"
-                  src={`https://image.tmdb.org/t/p/w1280${targetItem.item.backdrop_path}`}
+                  src={`https://image.tmdb.org/t/p/w1280${targetItem.item.poster_path}`}
                   style={{
                     position: 'relative',
                     maxHeight: 300,

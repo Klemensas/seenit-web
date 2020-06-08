@@ -87,6 +87,12 @@ export type Company = {
   origin_country?: Maybe<Scalars['String']>;
 };
 
+export type ConvertedAutoTracked = {
+  __typename?: 'ConvertedAutoTracked';
+  removedIds: Array<Scalars['ID']>;
+  watched: Array<Watched>;
+};
+
 export type Country = {
   __typename?: 'Country';
   iso_3166_1?: Maybe<Scalars['String']>;
@@ -175,12 +181,12 @@ export type Mutation = {
   _?: Maybe<Scalars['Boolean']>;
   addAutoTracked: AutoTracked;
   addWatched: Watched;
-  convertAutoTracked: Array<Watched>;
+  convertAutoTracked: ConvertedAutoTracked;
   editWatched: Watched;
   login: LocalAuth;
   logout?: Maybe<Scalars['Boolean']>;
   register: LocalAuth;
-  removeAutoTracked?: Maybe<Scalars['Boolean']>;
+  removeAutoTracked: Array<Scalars['ID']>;
   removeWatched: Scalars['ID'];
 };
 
@@ -201,6 +207,7 @@ export type MutationAddWatchedArgs = {
   createdAt?: Maybe<Scalars['Float']>;
   tvItemId?: Maybe<Scalars['ID']>;
   tvItemType?: Maybe<TvItemType>;
+  autoTrackedId?: Maybe<Scalars['ID']>;
 };
 
 export type MutationConvertAutoTrackedArgs = {
@@ -382,7 +389,7 @@ export type SearchItem = {
   tmdbId: Scalars['Int'];
   title: Scalars['String'];
   release_date?: Maybe<Scalars['String']>;
-  type?: Maybe<TmdbMediaType>;
+  type?: Maybe<ItemType>;
 };
 
 export type Season = {
@@ -601,6 +608,7 @@ export type AddWatchedMutationVariables = {
   review?: Maybe<ReviewInput>;
   tvItemId?: Maybe<Scalars['ID']>;
   tvItemType?: Maybe<TvItemType>;
+  autoTrackedId?: Maybe<Scalars['ID']>;
 };
 
 export type AddWatchedMutation = { __typename?: 'Mutation' } & {
@@ -679,7 +687,10 @@ export type ConvertAutoTrackedMutationVariables = {
 };
 
 export type ConvertAutoTrackedMutation = { __typename?: 'Mutation' } & {
-  convertAutoTracked: Array<{ __typename?: 'Watched' } & Pick<Watched, 'id'>>;
+  convertAutoTracked: { __typename?: 'ConvertedAutoTracked' } & Pick<
+    ConvertedAutoTracked,
+    'removedIds'
+  >;
 };
 
 export type AuthQueryVariables = {};
@@ -1236,6 +1247,7 @@ export const AddWatchedDocument = gql`
     $review: ReviewInput
     $tvItemId: ID
     $tvItemType: TvItemType
+    $autoTrackedId: ID
   ) {
     addWatched(
       itemId: $itemId
@@ -1245,6 +1257,7 @@ export const AddWatchedDocument = gql`
       review: $review
       tvItemId: $tvItemId
       tvItemType: $tvItemType
+      autoTrackedId: $autoTrackedId
     ) {
       id
       itemType
@@ -1300,6 +1313,7 @@ export type AddWatchedMutationFn = ApolloReactCommon.MutationFunction<
  *      review: // value for 'review'
  *      tvItemId: // value for 'tvItemId'
  *      tvItemType: // value for 'tvItemType'
+ *      autoTrackedId: // value for 'autoTrackedId'
  *   },
  * });
  */
@@ -1517,7 +1531,7 @@ export type RemoveAutoTrackedMutationOptions = ApolloReactCommon.BaseMutationOpt
 export const ConvertAutoTrackedDocument = gql`
   mutation ConvertAutoTracked($ids: [ID!]!) {
     convertAutoTracked(ids: $ids) {
-      id
+      removedIds
     }
   }
 `;
