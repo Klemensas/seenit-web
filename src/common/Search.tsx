@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { MenuItem, PopoverPosition } from '@blueprintjs/core';
+import { useHistory } from 'react-router-dom';
+import { MenuItem, PopoverPosition, Spinner } from '@blueprintjs/core';
 import { Suggest, IItemRendererProps } from '@blueprintjs/select';
 
 import { useSearchContentQuery, SearchItem } from '../graphql';
-import { useHistory } from 'react-router-dom';
+import useThrottle from './useThrottle';
 
 export interface SearchOption {
   label: string;
@@ -35,9 +36,15 @@ const Search: React.FC<{
 }> = ({ selected, setSelected }) => {
   const [query, setQuery] = React.useState('');
 
+  const { callback } = useThrottle(
+    (payload: string) => setQuery(payload),
+    1000,
+  );
+
+  const shouldSearch = query.length > 2;
   const searchQuery = useSearchContentQuery({
     variables: { title: query },
-    skip: !query,
+    skip: query.length < 3,
   });
   const options =
     searchQuery.data && searchQuery.data.searchContent
@@ -54,29 +61,34 @@ const Search: React.FC<{
         )
       : [];
 
-  //       <Button
-  //   loading={searchQuery.loading}
-  //   large
-  //   minimal
-  //   text={selected ? selected.title : 'Search...'}
-  //   className="bp3-fill"
-  // />
-  // </Suggest>
-
   return (
     <Suggest<SearchOption>
       itemRenderer={renderOption}
       items={options}
-      onQueryChange={(payload: string) => setQuery(payload)}
+      onQueryChange={callback}
       onItemSelect={({ item }) => setSelected(item)}
-      noResults={<MenuItem disabled={true} text="Got nothing :(" />}
-      initialContent={null}
+      noResults={
+        <MenuItem
+          disabled
+          text={
+            shouldSearch
+              ? searchQuery.loading
+                ? 'Loading...'
+                : 'Got nothing :('
+              : 'Type more to start seach'
+          }
+        />
+      }
+      initialContent={<MenuItem disabled text="Type more to start seach" />}
       inputValueRenderer={item => item.label}
       popoverProps={{
         minimal: true,
         fill: true,
         usePortal: false,
         position: PopoverPosition.BOTTOM,
+      }}
+      inputProps={{
+        rightElement: searchQuery?.loading ? <Spinner size={16} /> : undefined,
       }}
       className="select-popover-centered"
     />
