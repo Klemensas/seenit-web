@@ -39,11 +39,10 @@ export default function Tv({ match }: RouteComponentProps<TvRouteParams>) {
     first_air_date,
     vote_count,
     vote_average,
-    backdrop_path,
+    poster_path,
     seasons,
   } = data.tv;
   const rating = vote_count > 100 ? vote_average : null;
-
   return (
     <>
       <div style={{ position: 'relative' }}>
@@ -51,7 +50,7 @@ export default function Tv({ match }: RouteComponentProps<TvRouteParams>) {
           width="300"
           height="200"
           className="img-responsive"
-          src={`https://image.tmdb.org/t/p/w1280${backdrop_path}`}
+          src={`https://image.tmdb.org/t/p/w1280${poster_path}`}
           style={{
             position: 'relative',
             maxHeight: '300px',
@@ -102,7 +101,12 @@ export default function Tv({ match }: RouteComponentProps<TvRouteParams>) {
           />
         </Switch>
         <WatchedTvDialog
-          tv={data.tv}
+          tv={{
+            id: data.tv.id,
+            title: name,
+            poster: data.tv.poster_path || '',
+            seasons,
+          }}
           editingWatched={editingWatched}
           onClose={() => setEditingWatched(null)}
         />

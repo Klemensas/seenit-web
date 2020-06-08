@@ -5,9 +5,10 @@ import { Button, Intent, H1, H2 } from '@blueprintjs/core';
 
 import { useMovieQuery, useAuthQuery } from '../../graphql';
 import Rating from '../../common/Rating';
-import WatchedMovieDialog, { EditingWatched } from './WatchedMovieDialog';
+import { EditingWatched } from '../../common/WatchedForm';
 import ReviewList from '../ReviewList';
 import UserWatchedList from '../UserWatchedList';
+import WatchedDialog from '../WatchedDialog';
 
 type MovieRouteParams = {
   id: string;
@@ -32,7 +33,7 @@ export default function Movie({
   const {
     title,
     overview,
-    backdrop_path,
+    poster_path,
     vote_count,
     vote_average,
     release_date,
@@ -46,7 +47,7 @@ export default function Movie({
           width="300"
           height="200"
           className="img-responsive"
-          src={`https://image.tmdb.org/t/p/w1280${backdrop_path}`}
+          src={`https://image.tmdb.org/t/p/w1280${poster_path}`}
           style={{
             position: 'relative',
             maxHeight: '300px',
@@ -86,8 +87,8 @@ export default function Movie({
           <ReviewList itemId={id} />
         </div>
 
-        <WatchedMovieDialog
-          movie={data.movie}
+        <WatchedDialog
+          item={data.movie}
           editingWatched={editingWatched}
           onClose={() => setEditingWatched(null)}
         />

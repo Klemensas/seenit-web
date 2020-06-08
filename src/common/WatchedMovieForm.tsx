@@ -3,17 +3,11 @@ import { Formik, FormikHelpers } from 'formik';
 import { FormGroup, TextArea, Button, Intent } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 
-import { MovieQuery } from '../graphql';
 import RatingInput from './RatingInput';
-
-export type WatchedValues = {
-  review: string;
-  rating?: number;
-  createdAt: number;
-};
+import { WatchedFormItemData, WatchedValues } from './WatchedForm';
 
 interface Props {
-  item: NonNullable<MovieQuery['movie']>;
+  item: WatchedFormItemData;
   values?: WatchedValues;
   onSubmit: (
     values: WatchedValues,
@@ -31,10 +25,10 @@ export default function WatchedMovieForm({
   return (
     <React.Fragment>
       <div className="flex p-3">
-        {item.poster_path && (
+        {item.poster && (
           <div className="pr-3">
             <img
-              src={`https://image.tmdb.org/t/p/w185${item.poster_path}`}
+              src={`https://image.tmdb.org/t/p/w185${item.poster}`}
               alt={`Poster for ${item.title}`}
               className="img-responsive"
             />

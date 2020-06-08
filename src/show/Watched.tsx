@@ -44,7 +44,7 @@ export default function Watched({
 
       if (!removedId || !dataId) return;
 
-      cache.evict(dataId);
+      cache.evict({ id: dataId });
       cache.gc();
     },
   });

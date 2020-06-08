@@ -1,14 +1,13 @@
 import React from 'react';
 import { Card } from '@blueprintjs/core';
-import { formatDistanceStrict } from 'date-fns';
 import { ItemType, Movie, Tv, Season, Episode } from '../graphql';
 import { Link } from 'react-router-dom';
 import { formatTvString } from './helpers/watched';
 import { RelativeDate } from './RelativeDate';
 
 type ItemData =
-  | Pick<Movie, 'id' | 'title' | 'backdrop_path'>
-  | Pick<Tv, 'id' | 'name' | 'backdrop_path'>;
+  | Pick<Movie, 'id' | 'title' | 'poster_path'>
+  | Pick<Tv, 'id' | 'name' | 'poster_path'>;
 
 type SeasonData = Pick<Season, 'id' | 'season_number'>;
 type TvItemData =
@@ -37,7 +36,7 @@ export default function Seen({
             width="300"
             height="200"
             className="img-responsive"
-            src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
+            src={`https://image.tmdb.org/t/p/w1280${item.poster_path}`}
             style={{ position: 'relative' }}
             alt=""
           />
