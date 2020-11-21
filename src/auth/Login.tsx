@@ -1,16 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { FormGroup, InputGroup, Button, Intent } from '@blueprintjs/core';
-
-import {
-  useLoginMutation,
-  useRegisterMutation,
-  LoginMutation,
-  RegisterMutation,
-} from '../graphql';
-import { FetchResult } from 'apollo-link';
-import { MutationFunctionOptions, ApolloCache } from '@apollo/client';
-import { setAuthData } from '../graphql/helpers';
+import useFetch from 'use-http';
 
 export default function Login() {
   const history = useHistory();
@@ -20,38 +11,19 @@ export default function Login() {
     name: '',
   });
   const [isLogin, setLogin] = React.useState(true);
-  const mutationParams = {
-    variables: form,
-    // refetchQueries: [
-    //   {
-    //     query: SetAuthDocument,
-    //     variables: {},
-    //   },
-    // ],
-    update: (
-      cache: ApolloCache<LoginMutation | RegisterMutation>,
-      { data }: FetchResult<LoginMutation | RegisterMutation>,
-    ) => {
-      if (!data) return;
-
-      const { token, user } = 'login' in data ? data.login : data.register;
-      setAuthData(cache, user, token);
-    },
-  };
-
-  const [login] = useLoginMutation(mutationParams);
-  const [register] = useRegisterMutation(mutationParams);
-  const mutationFn: (
-    options?: MutationFunctionOptions<any, any>,
-  ) => Promise<any> = isLogin ? login : register;
+  const path = isLogin ? 'login' : 'register';
+  const { post, response, loading, error } = useFetch(
+    `http://localhost:9000/auth/${path}`,
+  );
 
   return (
     <form
-      onSubmit={e => {
+      onSubmit={async e => {
         e.preventDefault();
-        mutationFn().then(() => {
-          history.push('/');
-        });
+
+        await post(form);
+
+        if (response.ok) return history.push('/');
       }}
     >
       {!isLogin && (

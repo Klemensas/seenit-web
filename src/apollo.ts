@@ -1,4 +1,9 @@
-import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloLink,
+  InMemoryCache,
+  fromPromise,
+} from '@apollo/client';
 import { onError } from '@apollo/link-error';
 import { setContext } from '@apollo/link-context';
 import { BatchHttpLink } from '@apollo/link-batch-http';
@@ -18,6 +23,11 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
   if (isAuthenticationError) {
     // TODO: implement refresh token
+    fromPromise(
+      fetch('http://localhost:9000/auth/refresh_token').then(response =>
+        response.json(),
+      ),
+    );
     setAuthData(cache);
     return;
   }
