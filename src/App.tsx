@@ -12,6 +12,7 @@ import Setup from './setup/Setup';
 import Dashboard from './dashboard/Dashboard';
 import Movie from './show/Movie/Movie';
 import Tv from './show/Tv/Tv';
+import BasicLayout from './layouts/BasicLayout';
 
 export default function App() {
   return (
@@ -25,11 +26,15 @@ export default function App() {
             component={Dashboard}
             redirectComponent={Home}
           />
-          <Route exact path="/setup" component={Setup} />
-          <Route exact path="/login" component={Login} />
           <Route path="/movie/:id" component={Movie} />
           <Route path="/tv/:id" component={Tv} />
           <Route exact path="/profile/:name" component={Profile} />
+          <BasicLayout>
+            <Switch>
+              <Route exact path="/setup" component={Setup} />
+              <Route exact path="/login" component={Login} />
+            </Switch>
+          </BasicLayout>
         </Switch>
       </div>
     </>
