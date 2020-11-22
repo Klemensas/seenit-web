@@ -120,7 +120,7 @@ export default function AutoTrackedDialog({
         <WatchedMutationForm
           item={selectedItem}
           editingWatched={editingWatched}
-          afterSubmit={onClose}
+          afterSave={onClose}
         />
       )}
     </Dialog>

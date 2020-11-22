@@ -115,6 +115,28 @@ export type Episode = {
   season: Season;
 };
 
+export type ExtensionSettings = {
+  __typename?: 'ExtensionSettings';
+  autoTrack: Scalars['Boolean'];
+  minLengthSeconds: Scalars['Int'];
+  blacklist: Array<Scalars['String']>;
+};
+
+export type ExtensionSettingsInput = {
+  autoTrack: Scalars['Boolean'];
+  minLengthSeconds: Scalars['Int'];
+  blacklist: Array<Scalars['String']>;
+};
+
+export type GeneralSettings = {
+  __typename?: 'GeneralSettings';
+  autoConvert: Scalars['Boolean'];
+};
+
+export type GeneralSettingsInput = {
+  autoConvert: Scalars['Boolean'];
+};
+
 export type Genre = {
   __typename?: 'Genre';
   id?: Maybe<Scalars['Int']>;
@@ -188,6 +210,7 @@ export type Mutation = {
   register: LocalAuth;
   removeAutoTracked: Array<Scalars['ID']>;
   removeWatched: Scalars['ID'];
+  updateSettings: Settings;
 };
 
 export type MutationAddAutoTrackedArgs = {
@@ -242,6 +265,11 @@ export type MutationRemoveWatchedArgs = {
   itemId: Scalars['ID'];
 };
 
+export type MutationUpdateSettingsArgs = {
+  general: GeneralSettingsInput;
+  extension: ExtensionSettingsInput;
+};
+
 export type Network = {
   __typename?: 'Network';
   id?: Maybe<Scalars['Int']>;
@@ -263,6 +291,7 @@ export type Query = {
   searchContent: Array<SearchItem>;
   season: Season;
   seasons: Array<Season>;
+  settings?: Maybe<Settings>;
   tv: Tv;
   user: User;
   users?: Maybe<Array<User>>;
@@ -407,6 +436,14 @@ export type Season = {
   episodes: Array<Episode>;
 };
 
+export type Settings = {
+  __typename?: 'Settings';
+  id: Scalars['ID'];
+  general: GeneralSettings;
+  extension: ExtensionSettings;
+  user: User;
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   _?: Maybe<Scalars['Boolean']>;
@@ -527,6 +564,7 @@ export type User = {
   createdAt: Scalars['Float'];
   updatedAt: Scalars['Float'];
   watched: WatchedCursor;
+  settings: Settings;
 };
 
 export type UserWatchedArgs = {
@@ -574,7 +612,18 @@ export type LoginMutation = { __typename?: 'Mutation' } & {
       user: { __typename?: 'User' } & Pick<
         User,
         'id' | 'name' | 'email' | 'createdAt' | 'updatedAt'
-      >;
+      > & {
+          settings: { __typename?: 'Settings' } & {
+            general: { __typename?: 'GeneralSettings' } & Pick<
+              GeneralSettings,
+              'autoConvert'
+            >;
+            extension: { __typename?: 'ExtensionSettings' } & Pick<
+              ExtensionSettings,
+              'autoTrack' | 'minLengthSeconds' | 'blacklist'
+            >;
+          };
+        };
     };
 };
 
@@ -589,7 +638,18 @@ export type RegisterMutation = { __typename?: 'Mutation' } & {
       user: { __typename?: 'User' } & Pick<
         User,
         'id' | 'name' | 'email' | 'createdAt' | 'updatedAt'
-      >;
+      > & {
+          settings: { __typename?: 'Settings' } & {
+            general: { __typename?: 'GeneralSettings' } & Pick<
+              GeneralSettings,
+              'autoConvert'
+            >;
+            extension: { __typename?: 'ExtensionSettings' } & Pick<
+              ExtensionSettings,
+              'autoTrack' | 'minLengthSeconds' | 'blacklist'
+            >;
+          };
+        };
     };
 };
 
@@ -693,11 +753,43 @@ export type ConvertAutoTrackedMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
+export type UpdateSettingsMutationVariables = {
+  general: GeneralSettingsInput;
+  extension: ExtensionSettingsInput;
+};
+
+export type UpdateSettingsMutation = { __typename?: 'Mutation' } & {
+  updateSettings: { __typename?: 'Settings' } & {
+    general: { __typename?: 'GeneralSettings' } & Pick<
+      GeneralSettings,
+      'autoConvert'
+    >;
+    extension: { __typename?: 'ExtensionSettings' } & Pick<
+      ExtensionSettings,
+      'autoTrack' | 'minLengthSeconds' | 'blacklist'
+    >;
+  };
+};
+
 export type AuthQueryVariables = {};
 
 export type AuthQuery = { __typename?: 'Query' } & {
   auth?: Maybe<
-    { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email' | 'createdAt'>
+    { __typename?: 'User' } & Pick<
+      User,
+      'id' | 'name' | 'email' | 'createdAt'
+    > & {
+        settings: { __typename?: 'Settings' } & {
+          general: { __typename?: 'GeneralSettings' } & Pick<
+            GeneralSettings,
+            'autoConvert'
+          >;
+          extension: { __typename?: 'ExtensionSettings' } & Pick<
+            ExtensionSettings,
+            'autoTrack' | 'minLengthSeconds' | 'blacklist'
+          >;
+        };
+      }
   >;
 };
 
@@ -978,6 +1070,23 @@ export type SeasonsQuery = { __typename?: 'Query' } & {
   seasons: Array<{ __typename?: 'Season' } & SeasonPropsFragment>;
 };
 
+export type SettingsQueryVariables = {};
+
+export type SettingsQuery = { __typename?: 'Query' } & {
+  settings?: Maybe<
+    { __typename?: 'Settings' } & {
+      general: { __typename?: 'GeneralSettings' } & Pick<
+        GeneralSettings,
+        'autoConvert'
+      >;
+      extension: { __typename?: 'ExtensionSettings' } & Pick<
+        ExtensionSettings,
+        'autoTrack' | 'minLengthSeconds' | 'blacklist'
+      >;
+    }
+  >;
+};
+
 export const WatchedTvItemPropsFragmentDoc = gql`
   fragment WatchedTvItemProps on TvItem {
     ... on Episode {
@@ -1090,6 +1199,16 @@ export const LoginDocument = gql`
         email
         createdAt
         updatedAt
+        settings {
+          general {
+            autoConvert
+          }
+          extension {
+            autoTrack
+            minLengthSeconds
+            blacklist
+          }
+        }
       }
     }
   }
@@ -1146,6 +1265,16 @@ export const RegisterDocument = gql`
         email
         createdAt
         updatedAt
+        settings {
+          general {
+            autoConvert
+          }
+          extension {
+            autoTrack
+            minLengthSeconds
+            blacklist
+          }
+        }
       }
     }
   }
@@ -1578,6 +1707,67 @@ export type ConvertAutoTrackedMutationOptions = ApolloReactCommon.BaseMutationOp
   ConvertAutoTrackedMutation,
   ConvertAutoTrackedMutationVariables
 >;
+export const UpdateSettingsDocument = gql`
+  mutation UpdateSettings(
+    $general: GeneralSettingsInput!
+    $extension: ExtensionSettingsInput!
+  ) {
+    updateSettings(general: $general, extension: $extension) {
+      general {
+        autoConvert
+      }
+      extension {
+        autoTrack
+        minLengthSeconds
+        blacklist
+      }
+    }
+  }
+`;
+export type UpdateSettingsMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateSettingsMutation,
+  UpdateSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSettingsMutation, { data, loading, error }] = useUpdateSettingsMutation({
+ *   variables: {
+ *      general: // value for 'general'
+ *      extension: // value for 'extension'
+ *   },
+ * });
+ */
+export function useUpdateSettingsMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateSettingsMutation,
+    UpdateSettingsMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<
+    UpdateSettingsMutation,
+    UpdateSettingsMutationVariables
+  >(UpdateSettingsDocument, baseOptions);
+}
+export type UpdateSettingsMutationHookResult = ReturnType<
+  typeof useUpdateSettingsMutation
+>;
+export type UpdateSettingsMutationResult = ApolloReactCommon.MutationResult<
+  UpdateSettingsMutation
+>;
+export type UpdateSettingsMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateSettingsMutation,
+  UpdateSettingsMutationVariables
+>;
 export const AuthDocument = gql`
   query Auth {
     auth @client {
@@ -1585,6 +1775,16 @@ export const AuthDocument = gql`
       name
       email
       createdAt
+      settings {
+        general {
+          autoConvert
+        }
+        extension {
+          autoTrack
+          minLengthSeconds
+          blacklist
+        }
+      }
     }
   }
 `;
@@ -2245,4 +2445,64 @@ export type SeasonsLazyQueryHookResult = ReturnType<typeof useSeasonsLazyQuery>;
 export type SeasonsQueryResult = ApolloReactCommon.QueryResult<
   SeasonsQuery,
   SeasonsQueryVariables
+>;
+export const SettingsDocument = gql`
+  query Settings {
+    settings {
+      general {
+        autoConvert
+      }
+      extension {
+        autoTrack
+        minLengthSeconds
+        blacklist
+      }
+    }
+  }
+`;
+
+/**
+ * __useSettingsQuery__
+ *
+ * To run a query within a React component, call `useSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSettingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSettingsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    SettingsQuery,
+    SettingsQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useQuery<SettingsQuery, SettingsQueryVariables>(
+    SettingsDocument,
+    baseOptions,
+  );
+}
+export function useSettingsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    SettingsQuery,
+    SettingsQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useLazyQuery<SettingsQuery, SettingsQueryVariables>(
+    SettingsDocument,
+    baseOptions,
+  );
+}
+export type SettingsQueryHookResult = ReturnType<typeof useSettingsQuery>;
+export type SettingsLazyQueryHookResult = ReturnType<
+  typeof useSettingsLazyQuery
+>;
+export type SettingsQueryResult = ApolloReactCommon.QueryResult<
+  SettingsQuery,
+  SettingsQueryVariables
 >;

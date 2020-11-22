@@ -4,6 +4,16 @@ query Auth {
     name
     email
     createdAt
+    settings {
+      general {
+        autoConvert
+      }
+      extension {
+        autoTrack
+        minLengthSeconds
+        blacklist
+      }
+    }
   }
 }
 
@@ -274,5 +284,18 @@ query AutoTrackedList($userId: ID!, $cursor: String) {
 query Seasons($itemId: ID!) {
   seasons(itemId: $itemId) {
     ...SeasonProps
+  }
+}
+
+query Settings {
+  settings {
+    general {
+      autoConvert
+    }
+    extension {
+      autoTrack
+      minLengthSeconds
+      blacklist
+    }
   }
 }

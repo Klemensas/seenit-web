@@ -12,6 +12,7 @@ import Setup from './setup/Setup';
 import Dashboard from './dashboard/Dashboard';
 import Movie from './show/Movie/Movie';
 import Tv from './show/Tv/Tv';
+import Settings from './settings/Settings';
 import NotFound from './generic/NotFound';
 import BasicLayout from './layouts/BasicLayout';
 
@@ -34,6 +35,7 @@ export default function App() {
             <Switch>
               <Route exact path="/setup" component={Setup} />
               <Route exact path="/login" component={Login} />
+              <AuthRoute exact path="/settings" component={Settings} />
               <Route path="*" component={NotFound} />
             </Switch>
           </BasicLayout>
