@@ -28,7 +28,7 @@ export default function WatchedDialog({
       <WatchedMutationForm
         editingWatched={editingWatched}
         item={item}
-        afterSubmit={onClose}
+        afterSave={onClose}
       />
       />
     </Dialog>

@@ -7,6 +7,16 @@ mutation Login($email: String!, $password: String!) {
       email
       createdAt
       updatedAt
+      settings {
+        general {
+          autoConvert
+        }
+        extension {
+          autoTrack
+          minLengthSeconds
+          blacklist
+        }
+      }
     }
   }
 }
@@ -20,6 +30,16 @@ mutation Register($name: String!, $email: String!, $password: String!) {
       email
       createdAt
       updatedAt
+      settings {
+        general {
+          autoConvert
+        }
+        extension {
+          autoTrack
+          minLengthSeconds
+          blacklist
+        }
+      }
     }
   }
 }
@@ -137,5 +157,21 @@ mutation RemoveAutoTracked($ids: [ID!]!) {
 mutation ConvertAutoTracked($ids: [ID!]!) {
   convertAutoTracked(ids: $ids) {
     removedIds
+  }
+}
+
+mutation UpdateSettings(
+  $general: GeneralSettingsInput!
+  $extension: ExtensionSettingsInput!
+) {
+  updateSettings(general: $general, extension: $extension) {
+    general {
+      autoConvert
+    }
+    extension {
+      autoTrack
+      minLengthSeconds
+      blacklist
+    }
   }
 }

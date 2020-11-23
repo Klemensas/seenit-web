@@ -12,13 +12,13 @@ import WatchedForm, { EditingWatched } from '../common/WatchedForm';
 
 export type Props = {
   editingWatched: EditingWatched;
-  afterSubmit: () => void;
+  afterSave: () => void;
   item: TvQuery['tv'] | MovieQuery['movie'];
 };
 
 export default function WatchedMutationForm({
   editingWatched,
-  afterSubmit,
+  afterSave,
   item,
 }: Props) {
   const [addWatched, { loading: addWatchedLoading }] = useAddWatchedMutation();
@@ -61,6 +61,9 @@ export default function WatchedMutationForm({
                   }
                 : undefined,
             },
+            // Assuming this can only be accessed from the dashboard so initiating the auto tracked item list refetch
+            refetchQueries:
+              'autoTracked' in editingWatched ? ['AutoTrackedList'] : undefined,
           });
         }
 
@@ -81,7 +84,7 @@ export default function WatchedMutationForm({
         });
 
         await query;
-        afterSubmit();
+        afterSave();
       }}
     />
   );
