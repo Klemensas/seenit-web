@@ -36,6 +36,7 @@ export default function Login() {
 
       const { token, user } = 'login' in data ? data.login : data.register;
       setAuthData(cache, user, token);
+      document.dispatchEvent(new CustomEvent('seenit-login'));
     },
   };
 
