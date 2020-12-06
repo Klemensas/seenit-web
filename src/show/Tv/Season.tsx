@@ -30,7 +30,7 @@ export default function Season({ season, expanded = false }: SeasonProps) {
         <div className="w-100 pl-3">
           <div className="mb-3 flex flex-content-between flex-items-center">
             <H3 className="mb-0">{season.name}</H3>
-            <div>{format(+season.air_date, 'yyyy')}</div>
+            {season.air_date && <div>{format(+season.air_date, 'yyyy')}</div>}
           </div>
           <p>{season.overview}</p>
         </div>

@@ -1,7 +1,7 @@
 import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
-import { onError } from '@apollo/link-error';
-import { setContext } from '@apollo/link-context';
-import { BatchHttpLink } from '@apollo/link-batch-http';
+import { BatchHttpLink } from '@apollo/client/link/batch-http';
+import { onError } from '@apollo/client/link/error';
+import { setContext } from '@apollo/client/link/context';
 // import { persistCache } from 'apollo-cache-persist';
 
 import { resolvers, typeDefs } from './graphql/resolvers';

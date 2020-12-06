@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { FormGroup, InputGroup, Button, Intent } from '@blueprintjs/core';
+import { ApolloCache, FetchResult } from '@apollo/client';
 
 import {
   useLoginMutation,
@@ -8,8 +9,6 @@ import {
   LoginMutation,
   RegisterMutation,
 } from '../graphql';
-import { FetchResult } from 'apollo-link';
-import { MutationFunctionOptions, ApolloCache } from '@apollo/client';
 import { setAuthData } from '../graphql/helpers';
 
 export default function Login() {
@@ -42,17 +41,15 @@ export default function Login() {
 
   const [login] = useLoginMutation(mutationParams);
   const [register] = useRegisterMutation(mutationParams);
-  const mutationFn: (
-    options?: MutationFunctionOptions<any, any>,
-  ) => Promise<any> = isLogin ? login : register;
+  const mutationFn = isLogin ? login : register;
 
   return (
     <form
-      onSubmit={e => {
-        e.preventDefault();
-        mutationFn().then(() => {
-          history.push('/');
-        });
+      onSubmit={async event => {
+        event.preventDefault();
+
+        await mutationFn();
+        history.push('/');
       }}
     >
       {!isLogin && (

@@ -3,7 +3,6 @@ export interface PossibleTypesResultData {
     [key: string]: string[];
   };
 }
-
 const result: PossibleTypesResultData = {
   possibleTypes: {
     Item: ['Movie', 'Tv'],
@@ -11,5 +10,4 @@ const result: PossibleTypesResultData = {
     TmdbMedia: ['TmdbMovie', 'TmdbTv'],
   },
 };
-
 export default result;
