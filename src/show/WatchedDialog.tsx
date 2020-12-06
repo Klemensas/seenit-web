@@ -30,7 +30,6 @@ export default function WatchedDialog({
         item={item}
         afterSave={onClose}
       />
-      />
     </Dialog>
   );
 }

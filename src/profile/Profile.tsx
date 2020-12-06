@@ -27,14 +27,13 @@ const loadMore = (
     updateQuery: (prev, { fetchMoreResult }) => {
       if (!fetchMoreResult?.user) return prev;
 
-      const prevWatched = prev.user?.watched?.watched || [];
-      const newWatched = fetchMoreResult.user.watched?.watched || [];
+      const prevWatched = prev.user.watched.watched || [];
+      const newWatched = fetchMoreResult.user.watched.watched || [];
 
       return {
         user: {
           ...fetchMoreResult.user,
           watched: {
-            hasMore: false,
             ...fetchMoreResult.user.watched,
             watched: [...prevWatched, ...newWatched],
           },
@@ -50,7 +49,7 @@ export default function Profile() {
     targetIndex: -1,
   });
 
-  const { name } = useParams();
+  const { name } = useParams<{ name: string }>();
   const history = useHistory();
   const { loading, data, fetchMore } = useUserQuery({
     variables: { name },
