@@ -1,27 +1,29 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import {
   Card,
   ButtonGroup,
   Button,
   NonIdealState,
   Code,
+  Icon,
 } from '@blueprintjs/core';
+import { Link, useLocation } from 'react-router-dom';
 
 import { AutoTrackedListQuery } from '../graphql';
 import { formatTvString } from '../common/helpers/watched';
 import { RelativeDate } from '../common/RelativeDate';
 import { preventBubbling } from '../common/helpers/general';
+import { DialogQueryParams } from '../common/dialog/query-params';
 
 type Props = AutoTrackedListQuery['autoTrackedList']['autoTracked'][0] & {
   isSelected: boolean;
   onSelect: () => void;
   onDeselect: () => void;
   onSave: () => void;
-  onEdit: () => void;
   onRemove: () => void;
 };
 
-export function AutoTrackedItem({
+export function AutoTrackedItems({
   id,
   createdAt,
   meta,
@@ -31,10 +33,13 @@ export function AutoTrackedItem({
   onSelect,
   onDeselect,
   onSave,
-  onEdit,
   onRemove,
 }: Props) {
   const name = item ? ('title' in item ? item.title : item.name) : '';
+  const location = useLocation();
+  const search = new URLSearchParams(location.search);
+  search.set(DialogQueryParams.EditingAutoTracked, id);
+
   return (
     <Card
       className={`card-watched fill-container ${isSelected ? 'selected' : ''}`}
@@ -131,26 +136,22 @@ export function AutoTrackedItem({
           }
         />
       )}
-      <ButtonGroup fill minimal>
+      <ButtonGroup fill minimal onClick={preventBubbling()}>
         {item && (
-          <Button
-            disabled={!item}
-            icon="tick"
-            onClick={preventBubbling<MouseEvent>(() => onSave())}
-          >
+          <Button disabled={!item} icon="tick" onClick={onSave}>
             Save
           </Button>
         )}
-        <Button
-          icon="edit"
-          onClick={preventBubbling<MouseEvent>(() => onEdit())}
+        <Link<any>
+          to={{ search: search.toString() }}
+          replace
+          className="bp3-button"
         >
-          Edit
-        </Button>
-        <Button
-          icon="trash"
-          onClick={preventBubbling<MouseEvent>(() => onRemove())}
-        >
+          <Icon icon="edit" className="mr-2" />
+          <span>Edit</span>
+        </Link>
+
+        <Button icon="trash" onClick={onRemove}>
           Remove
         </Button>
       </ButtonGroup>

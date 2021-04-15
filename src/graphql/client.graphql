@@ -2,6 +2,7 @@ directive @client on FIELD
 
 type Query {
   auth: User
+  isExtensionCheckDone: Boolean
 }
 
 type Mutation {

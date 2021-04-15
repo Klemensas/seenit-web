@@ -19,154 +19,86 @@ export type Scalars = {
   Upload: any;
 };
 
-export type Author = {
-  __typename?: 'Author';
-  id?: Maybe<Scalars['Int']>;
-  credit_id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  gender?: Maybe<Scalars['Int']>;
-  profile_path?: Maybe<Scalars['String']>;
-};
-
-export type AutoTracked = {
-  __typename?: 'AutoTracked';
-  id: Scalars['ID'];
-  userId: Scalars['ID'];
-  user: User;
-  itemType?: Maybe<ItemType>;
-  item?: Maybe<Item>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-  meta: AutoTrackedMeta;
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-};
-
-export type AutoTrackedCursor = {
-  __typename?: 'AutoTrackedCursor';
-  autoTracked: Array<AutoTracked>;
-  cursor?: Maybe<Scalars['String']>;
-  hasMore: Scalars['Boolean'];
-};
-
-export type AutoTrackedMeta = {
-  __typename?: 'AutoTrackedMeta';
-  title?: Maybe<Scalars['String']>;
-  tvData?: Maybe<AutoTrackedMetaTvData>;
-  filename?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  provider: Scalars['String'];
-};
-
-export type AutoTrackedMetaInput = {
-  title?: Maybe<Scalars['String']>;
-  tvData?: Maybe<TvDataInput>;
-  filename?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  provider: Scalars['String'];
-};
-
-export type AutoTrackedMetaTvData = {
-  __typename?: 'AutoTrackedMetaTvData';
-  season?: Maybe<Scalars['String']>;
-  episode?: Maybe<Scalars['String']>;
-};
-
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
-}
-
-export type Collection = {
-  __typename?: 'Collection';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  poster_path?: Maybe<Scalars['String']>;
-  backdrop_path?: Maybe<Scalars['String']>;
-};
-
-export type Company = {
-  __typename?: 'Company';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  logo_path?: Maybe<Scalars['String']>;
-  origin_country?: Maybe<Scalars['String']>;
-};
-
-export type ConvertedAutoTracked = {
-  __typename?: 'ConvertedAutoTracked';
-  removedIds: Array<Scalars['ID']>;
-  watched: Array<Watched>;
-};
-
-export type Country = {
-  __typename?: 'Country';
-  iso_3166_1?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type Episode = {
-  __typename?: 'Episode';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  overview: Scalars['String'];
-  episode_number: Scalars['Int'];
-  air_date?: Maybe<Scalars['String']>;
-  production_code?: Maybe<Scalars['String']>;
-  still_path?: Maybe<Scalars['String']>;
-  vote_average: Scalars['Float'];
-  vote_count: Scalars['Int'];
-  tmdbId: Scalars['Int'];
-  seasonId: Scalars['ID'];
+export type Query = {
+  __typename?: 'Query';
+  _?: Maybe<Scalars['Boolean']>;
+  auth?: Maybe<User>;
+  autoTracked: AutoTracked;
+  autoTrackedList: AutoTrackedCursor;
+  episode: Episode;
+  isExtensionCheckDone?: Maybe<Scalars['Boolean']>;
+  me: User;
+  movie: Movie;
+  reviews: ReviewCursor;
+  searchContent: Array<SearchItem>;
   season: Season;
-};
-
-export type ExtensionSettings = {
-  __typename?: 'ExtensionSettings';
-  autoTrack: Scalars['Boolean'];
-  minLengthSeconds: Scalars['Int'];
-  blacklist: Array<Scalars['String']>;
-};
-
-export type ExtensionSettingsInput = {
-  autoTrack: Scalars['Boolean'];
-  minLengthSeconds: Scalars['Int'];
-  blacklist: Array<Scalars['String']>;
-};
-
-export type GeneralSettings = {
-  __typename?: 'GeneralSettings';
-  autoConvert: Scalars['Boolean'];
-};
-
-export type GeneralSettingsInput = {
-  autoConvert: Scalars['Boolean'];
-};
-
-export type Genre = {
-  __typename?: 'Genre';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type Item = Movie | Tv;
-
-export enum ItemType {
-  Movie = 'Movie',
-  Tv = 'Tv',
-}
-
-export type Language = {
-  __typename?: 'Language';
-  iso_639_1?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type LocalAuth = {
-  __typename?: 'LocalAuth';
+  seasons: Array<Season>;
+  settings: Settings;
+  tv: Tv;
   user: User;
-  token: Scalars['String'];
+  users?: Maybe<Array<User>>;
+  watched: Watched;
+  watches: WatchedCursor;
+};
+
+export type QueryAutoTrackedArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryAutoTrackedListArgs = {
+  userId: Scalars['ID'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
+export type QueryEpisodeArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QueryMovieArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QueryReviewsArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+  cursor?: Maybe<Scalars['String']>;
+};
+
+export type QuerySearchContentArgs = {
+  title: Scalars['String'];
+};
+
+export type QuerySeasonArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QuerySeasonsArgs = {
+  itemId: Scalars['ID'];
+};
+
+export type QueryTvArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QueryUserArgs = {
+  id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type QueryWatchedArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryWatchesArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type Movie = {
@@ -205,10 +137,285 @@ export type MovieWatchedArgs = {
   filter?: Maybe<Scalars['String']>;
 };
 
+export type Collection = {
+  __typename?: 'Collection';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  poster_path?: Maybe<Scalars['String']>;
+  backdrop_path?: Maybe<Scalars['String']>;
+};
+
+export type Genre = {
+  __typename?: 'Genre';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type Company = {
+  __typename?: 'Company';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  logo_path?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Scalars['String']>;
+};
+
+export type Country = {
+  __typename?: 'Country';
+  iso_3166_1?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type Language = {
+  __typename?: 'Language';
+  iso_639_1?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type WatchedCursor = {
+  __typename?: 'WatchedCursor';
+  watched: Array<Watched>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type Watched = {
+  __typename?: 'Watched';
+  id: Scalars['ID'];
+  tmdbId: Scalars['Int'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  userId: Scalars['ID'];
+  user: User;
+  itemType: ItemType;
+  item: Item;
+  rating?: Maybe<Rating>;
+  review?: Maybe<Review>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  watched: WatchedCursor;
+  settings: Settings;
+};
+
+export type UserWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
+};
+
+export type Settings = {
+  __typename?: 'Settings';
+  id: Scalars['ID'];
+  general: GeneralSettings;
+  extension: ExtensionSettings;
+  user: User;
+};
+
+export type GeneralSettings = {
+  __typename?: 'GeneralSettings';
+  autoConvert: Scalars['Boolean'];
+};
+
+export type ExtensionSettings = {
+  __typename?: 'ExtensionSettings';
+  autoTrack: Scalars['Boolean'];
+  minLengthSeconds: Scalars['Int'];
+  blacklist: Array<Scalars['String']>;
+};
+
+export enum ItemType {
+  Movie = 'Movie',
+  Tv = 'Tv',
+}
+
+export type Item = Movie | Tv;
+
+export type Tv = {
+  __typename?: 'Tv';
+  id: Scalars['ID'];
+  backdrop_path?: Maybe<Scalars['String']>;
+  created_by?: Maybe<Array<Maybe<Author>>>;
+  episode_run_time?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  first_air_date: Scalars['String'];
+  genres?: Maybe<Array<Maybe<Genre>>>;
+  homepage: Scalars['String'];
+  in_production: Scalars['Boolean'];
+  languages?: Maybe<Array<Maybe<Scalars['String']>>>;
+  last_air_date: Scalars['String'];
+  last_episode_to_air?: Maybe<Episode>;
+  name: Scalars['String'];
+  next_episode_to_air?: Maybe<Episode>;
+  networks?: Maybe<Array<Maybe<Network>>>;
+  number_of_episodes: Scalars['Int'];
+  number_of_seasons: Scalars['Int'];
+  origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
+  original_language: Scalars['String'];
+  original_name: Scalars['String'];
+  overview: Scalars['String'];
+  popularity: Scalars['Int'];
+  poster_path?: Maybe<Scalars['String']>;
+  production_companies?: Maybe<Array<Maybe<Company>>>;
+  seasons: Array<Season>;
+  status: Scalars['String'];
+  type: Scalars['String'];
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
+  tmdbId?: Maybe<Scalars['Int']>;
+  watched: WatchedCursor;
+};
+
+export type TvWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  filter?: Maybe<Scalars['String']>;
+};
+
+export type Author = {
+  __typename?: 'Author';
+  id?: Maybe<Scalars['Int']>;
+  credit_id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['Int']>;
+  profile_path?: Maybe<Scalars['String']>;
+};
+
+export type Episode = {
+  __typename?: 'Episode';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  overview: Scalars['String'];
+  episode_number: Scalars['Int'];
+  air_date?: Maybe<Scalars['String']>;
+  production_code?: Maybe<Scalars['String']>;
+  still_path?: Maybe<Scalars['String']>;
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
+  tmdbId: Scalars['Int'];
+  seasonId: Scalars['ID'];
+  season: Season;
+};
+
+export type Season = {
+  __typename?: 'Season';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  overview: Scalars['String'];
+  air_date?: Maybe<Scalars['String']>;
+  episode_count: Scalars['Int'];
+  poster_path?: Maybe<Scalars['String']>;
+  season_number: Scalars['Int'];
+  tmdbId: Scalars['Int'];
+  tvId: Scalars['ID'];
+  tv: Tv;
+  episodes: Array<Episode>;
+};
+
+export type Network = {
+  __typename?: 'Network';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  logo_path?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Scalars['String']>;
+};
+
+export type Rating = {
+  __typename?: 'Rating';
+  id: Scalars['ID'];
+  value: Scalars['Float'];
+  tmdbId: Scalars['Int'];
+  userId: Scalars['ID'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  user?: Maybe<User>;
+  watched?: Maybe<Watched>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
+
+export enum TvItemType {
+  Season = 'Season',
+  Episode = 'Episode',
+}
+
+export type TvItem = Season | Episode;
+
+export type Review = {
+  __typename?: 'Review';
+  id: Scalars['ID'];
+  body: Scalars['String'];
+  tmdbId: Scalars['Int'];
+  userId: Scalars['ID'];
+  user: User;
+  watched: Watched;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
+
+export type SearchItem = {
+  __typename?: 'SearchItem';
+  id: Scalars['String'];
+  tmdbId: Scalars['Int'];
+  title: Scalars['String'];
+  release_date?: Maybe<Scalars['String']>;
+  type: ItemType;
+};
+
+export type ReviewCursor = {
+  __typename?: 'ReviewCursor';
+  reviews: Array<Review>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type AutoTrackedCursor = {
+  __typename?: 'AutoTrackedCursor';
+  autoTracked: Array<AutoTracked>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type AutoTracked = {
+  __typename?: 'AutoTracked';
+  id: Scalars['ID'];
+  userId: Scalars['ID'];
+  user: User;
+  itemType?: Maybe<ItemType>;
+  item?: Maybe<Item>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+  meta: AutoTrackedMeta;
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+};
+
+export type AutoTrackedMeta = {
+  __typename?: 'AutoTrackedMeta';
+  title?: Maybe<Scalars['String']>;
+  tvData?: Maybe<AutoTrackedMetaTvData>;
+  filename?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+};
+
+export type AutoTrackedMetaTvData = {
+  __typename?: 'AutoTrackedMetaTvData';
+  season?: Maybe<Scalars['String']>;
+  episode?: Maybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   _?: Maybe<Scalars['Boolean']>;
-  addAutoTracked: AutoTracked;
+  addAutoTracked: AutoTrackedResult;
   addWatched: Watched;
   convertAutoTracked: ConvertedAutoTracked;
   editWatched: Watched;
@@ -277,133 +484,9 @@ export type MutationUpdateSettingsArgs = {
   extension: ExtensionSettingsInput;
 };
 
-export type Network = {
-  __typename?: 'Network';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  logo_path?: Maybe<Scalars['String']>;
-  origin_country?: Maybe<Scalars['String']>;
-};
-
-export type Query = {
-  __typename?: 'Query';
-  _?: Maybe<Scalars['Boolean']>;
-  auth?: Maybe<User>;
-  autoTracked: AutoTracked;
-  autoTrackedList: AutoTrackedCursor;
-  episode: Episode;
-  me: User;
-  movie: Movie;
-  reviews: ReviewCursor;
-  searchContent: Array<SearchItem>;
-  season: Season;
-  seasons: Array<Season>;
-  settings?: Maybe<Settings>;
-  tv: Tv;
-  user: User;
-  users?: Maybe<Array<User>>;
-  watched: Watched;
-  watches: WatchedCursor;
-};
-
-export type QueryAutoTrackedArgs = {
-  id: Scalars['ID'];
-};
-
-export type QueryAutoTrackedListArgs = {
-  userId: Scalars['ID'];
-  cursor?: Maybe<Scalars['String']>;
-};
-
-export type QueryEpisodeArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type QueryMovieArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type QueryReviewsArgs = {
-  userId?: Maybe<Scalars['ID']>;
-  itemId?: Maybe<Scalars['ID']>;
-  itemType?: Maybe<ItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItemType?: Maybe<TvItemType>;
-  cursor?: Maybe<Scalars['String']>;
-};
-
-export type QuerySearchContentArgs = {
-  title: Scalars['String'];
-};
-
-export type QuerySeasonArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type QuerySeasonsArgs = {
-  itemId: Scalars['ID'];
-};
-
-export type QueryTvArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type QueryUserArgs = {
-  id?: Maybe<Scalars['ID']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type QueryWatchedArgs = {
-  id: Scalars['ID'];
-};
-
-export type QueryWatchesArgs = {
-  userId?: Maybe<Scalars['ID']>;
-  itemId?: Maybe<Scalars['ID']>;
-  itemType?: Maybe<ItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItemType?: Maybe<TvItemType>;
-  cursor?: Maybe<Scalars['String']>;
-};
-
-export type Rating = {
-  __typename?: 'Rating';
-  id: Scalars['ID'];
-  value: Scalars['Float'];
-  tmdbId: Scalars['Int'];
-  userId: Scalars['ID'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  user?: Maybe<User>;
-  watched?: Maybe<Watched>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
 export type RatingInput = {
   id?: Maybe<Scalars['ID']>;
   value: Scalars['Float'];
-};
-
-export type Review = {
-  __typename?: 'Review';
-  id: Scalars['ID'];
-  body: Scalars['String'];
-  tmdbId: Scalars['Int'];
-  userId: Scalars['ID'];
-  user: User;
-  watched: Watched;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
-export type ReviewCursor = {
-  __typename?: 'ReviewCursor';
-  reviews: Array<Review>;
-  cursor?: Maybe<Scalars['String']>;
-  hasMore: Scalars['Boolean'];
 };
 
 export type ReviewInput = {
@@ -411,57 +494,47 @@ export type ReviewInput = {
   body: Scalars['String'];
 };
 
-export type Search = {
-  __typename?: 'Search';
-  results?: Maybe<Array<TmdbMedia>>;
-  page: Scalars['Int'];
-  total_pages: Scalars['Int'];
-  total_results: Scalars['Int'];
-};
-
-export type SearchItem = {
-  __typename?: 'SearchItem';
-  id: Scalars['String'];
-  tmdbId: Scalars['Int'];
-  title: Scalars['String'];
-  release_date?: Maybe<Scalars['String']>;
-  type: ItemType;
-};
-
-export type Season = {
-  __typename?: 'Season';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  overview: Scalars['String'];
-  air_date?: Maybe<Scalars['String']>;
-  episode_count: Scalars['Int'];
-  poster_path?: Maybe<Scalars['String']>;
-  season_number: Scalars['Int'];
-  tmdbId: Scalars['Int'];
-  tvId: Scalars['ID'];
-  tv: Tv;
-  episodes: Array<Episode>;
-};
-
-export type Settings = {
-  __typename?: 'Settings';
-  id: Scalars['ID'];
-  general: GeneralSettings;
-  extension: ExtensionSettings;
+export type LocalAuth = {
+  __typename?: 'LocalAuth';
   user: User;
+  token: Scalars['String'];
+};
+
+export type AutoTrackedMetaInput = {
+  title?: Maybe<Scalars['String']>;
+  tvData?: Maybe<TvDataInput>;
+  filename?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+};
+
+export type TvDataInput = {
+  season?: Maybe<Scalars['String']>;
+  episode?: Maybe<Scalars['String']>;
+};
+
+export type AutoTrackedResult = AutoTracked | Watched;
+
+export type ConvertedAutoTracked = {
+  __typename?: 'ConvertedAutoTracked';
+  removedIds: Array<Scalars['ID']>;
+  watched: Array<Watched>;
+};
+
+export type GeneralSettingsInput = {
+  autoConvert: Scalars['Boolean'];
+};
+
+export type ExtensionSettingsInput = {
+  autoTrack: Scalars['Boolean'];
+  minLengthSeconds: Scalars['Int'];
+  blacklist: Array<Scalars['String']>;
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
   _?: Maybe<Scalars['Boolean']>;
 };
-
-export type TmdbMedia = TmdbMovie | TmdbTv;
-
-export enum TmdbMediaType {
-  Movie = 'Movie',
-  Tv = 'Tv',
-}
 
 export type TmdbMovie = {
   __typename?: 'TmdbMovie';
@@ -482,17 +555,10 @@ export type TmdbMovie = {
   media_type?: Maybe<TmdbMediaType>;
 };
 
-export type TmdbPerson = {
-  __typename?: 'TmdbPerson';
-  popularity?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
-  vote_average?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  profile_path?: Maybe<Scalars['String']>;
-  adult?: Maybe<Scalars['String']>;
-  known_for?: Maybe<TmdbMedia>;
-  media_type?: Maybe<TmdbMediaType>;
-};
+export enum TmdbMediaType {
+  Movie = 'Movie',
+  Tv = 'Tv',
+}
 
 export type TmdbTv = {
   __typename?: 'TmdbTv';
@@ -512,101 +578,38 @@ export type TmdbTv = {
   media_type?: Maybe<TmdbMediaType>;
 };
 
-export type Tv = {
-  __typename?: 'Tv';
-  id: Scalars['ID'];
-  backdrop_path?: Maybe<Scalars['String']>;
-  created_by?: Maybe<Array<Maybe<Author>>>;
-  episode_run_time?: Maybe<Array<Maybe<Scalars['Int']>>>;
-  first_air_date: Scalars['String'];
-  genres?: Maybe<Array<Maybe<Genre>>>;
-  homepage: Scalars['String'];
-  in_production: Scalars['Boolean'];
-  languages?: Maybe<Array<Maybe<Scalars['String']>>>;
-  last_air_date: Scalars['String'];
-  last_episode_to_air?: Maybe<Episode>;
-  name: Scalars['String'];
-  next_episode_to_air?: Maybe<Episode>;
-  networks?: Maybe<Array<Maybe<Network>>>;
-  number_of_episodes: Scalars['Int'];
-  number_of_seasons: Scalars['Int'];
-  origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
-  original_language: Scalars['String'];
-  original_name: Scalars['String'];
-  overview: Scalars['String'];
-  popularity: Scalars['Int'];
-  poster_path?: Maybe<Scalars['String']>;
-  production_companies?: Maybe<Array<Maybe<Company>>>;
-  seasons: Array<Season>;
-  status: Scalars['String'];
-  type: Scalars['String'];
-  vote_average: Scalars['Float'];
-  vote_count: Scalars['Int'];
-  tmdbId?: Maybe<Scalars['Int']>;
-  watched: WatchedCursor;
+export type TmdbPerson = {
+  __typename?: 'TmdbPerson';
+  popularity?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
+  vote_average?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  profile_path?: Maybe<Scalars['String']>;
+  adult?: Maybe<Scalars['String']>;
+  known_for?: Maybe<TmdbMedia>;
+  media_type?: Maybe<TmdbMediaType>;
 };
 
-export type TvWatchedArgs = {
-  cursor?: Maybe<Scalars['String']>;
-  filter?: Maybe<Scalars['String']>;
+export type TmdbMedia = TmdbMovie | TmdbTv;
+
+export type Search = {
+  __typename?: 'Search';
+  results?: Maybe<Array<TmdbMedia>>;
+  page: Scalars['Int'];
+  total_pages: Scalars['Int'];
+  total_results: Scalars['Int'];
 };
 
-export type TvDataInput = {
-  season?: Maybe<Scalars['String']>;
-  episode?: Maybe<Scalars['String']>;
-};
-
-export type TvItem = Season | Episode;
-
-export enum TvItemType {
-  Season = 'Season',
-  Episode = 'Episode',
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE',
 }
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  email: Scalars['String'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  watched: WatchedCursor;
-  settings: Settings;
-};
-
-export type UserWatchedArgs = {
-  cursor?: Maybe<Scalars['String']>;
-};
 
 export type UserInput = {
   id: Scalars['ID'];
   name: Scalars['String'];
   email: Scalars['String'];
   updatedAt?: Maybe<Scalars['Float']>;
-};
-
-export type Watched = {
-  __typename?: 'Watched';
-  id: Scalars['ID'];
-  tmdbId: Scalars['Int'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  userId: Scalars['ID'];
-  user: User;
-  itemType: ItemType;
-  item: Item;
-  rating?: Maybe<Rating>;
-  review?: Maybe<Review>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
-export type WatchedCursor = {
-  __typename?: 'WatchedCursor';
-  watched: Array<Watched>;
-  cursor?: Maybe<Scalars['String']>;
-  hasMore: Scalars['Boolean'];
 };
 
 export type LoginMutationVariables = Exact<{
@@ -800,6 +803,15 @@ export type AuthQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type IsExtensionCheckDoneQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type IsExtensionCheckDoneQuery = { __typename?: 'Query' } & Pick<
+  Query,
+  'isExtensionCheckDone'
+>;
+
 export type WatchedPropsFragment = { __typename?: 'Watched' } & Pick<
   Watched,
   'id' | 'createdAt' | 'tvItemType'
@@ -818,14 +830,8 @@ export type WatchedItemPropsFragment = { __typename?: 'Watched' } & Pick<
   'itemType'
 > & {
     item:
-      | ({ __typename?: 'Movie' } & Pick<
-          Movie,
-          'id' | 'title' | 'release_date' | 'poster_path' | 'backdrop_path'
-        >)
-      | ({ __typename?: 'Tv' } & Pick<
-          Tv,
-          'id' | 'name' | 'first_air_date' | 'poster_path' | 'backdrop_path'
-        >);
+      | ({ __typename?: 'Movie' } & ItemData_Movie_Fragment)
+      | ({ __typename?: 'Tv' } & ItemData_Tv_Fragment);
   };
 
 type WatchedTvItemProps_Season_Fragment = { __typename?: 'Season' } & Pick<
@@ -945,7 +951,8 @@ export type WatchedQueryVariables = Exact<{
 }>;
 
 export type WatchedQuery = { __typename?: 'Query' } & {
-  watched: { __typename?: 'Watched' } & WatchedPropsFragment;
+  watched: { __typename?: 'Watched' } & WatchedPropsFragment &
+    WatchedItemPropsFragment;
 };
 
 export type WatchesQueryVariables = Exact<{
@@ -1030,22 +1037,8 @@ export type AutoTrackedListQuery = { __typename?: 'Query' } & {
           'id' | 'itemType' | 'tvItemType' | 'createdAt'
         > & {
             item?: Maybe<
-              | ({ __typename?: 'Movie' } & Pick<
-                  Movie,
-                  | 'id'
-                  | 'title'
-                  | 'release_date'
-                  | 'poster_path'
-                  | 'backdrop_path'
-                >)
-              | ({ __typename?: 'Tv' } & Pick<
-                  Tv,
-                  | 'id'
-                  | 'name'
-                  | 'first_air_date'
-                  | 'poster_path'
-                  | 'backdrop_path'
-                >)
+              | ({ __typename?: 'Movie' } & ItemData_Movie_Fragment)
+              | ({ __typename?: 'Tv' } & ItemData_Tv_Fragment)
             >;
             tvItem?: Maybe<
               | ({ __typename?: 'Season' } & WatchedTvItemProps_Season_Fragment)
@@ -1069,6 +1062,49 @@ export type AutoTrackedListQuery = { __typename?: 'Query' } & {
     };
 };
 
+type ItemData_Movie_Fragment = { __typename?: 'Movie' } & Pick<
+  Movie,
+  'id' | 'title' | 'release_date' | 'poster_path' | 'backdrop_path'
+>;
+
+type ItemData_Tv_Fragment = { __typename?: 'Tv' } & Pick<
+  Tv,
+  'id' | 'name' | 'first_air_date' | 'poster_path' | 'backdrop_path'
+>;
+
+export type ItemDataFragment = ItemData_Movie_Fragment | ItemData_Tv_Fragment;
+
+export type AutoTrackedQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type AutoTrackedQuery = { __typename?: 'Query' } & {
+  autoTracked: { __typename?: 'AutoTracked' } & Pick<
+    AutoTracked,
+    'id' | 'itemType' | 'tvItemType' | 'createdAt'
+  > & {
+      item?: Maybe<
+        | ({ __typename?: 'Movie' } & ItemData_Movie_Fragment)
+        | ({ __typename?: 'Tv' } & ItemData_Tv_Fragment)
+      >;
+      tvItem?: Maybe<
+        | ({ __typename?: 'Season' } & WatchedTvItemProps_Season_Fragment)
+        | ({ __typename?: 'Episode' } & WatchedTvItemProps_Episode_Fragment)
+      >;
+      meta: { __typename?: 'AutoTrackedMeta' } & Pick<
+        AutoTrackedMeta,
+        'title' | 'filename' | 'url' | 'provider'
+      > & {
+          tvData?: Maybe<
+            { __typename?: 'AutoTrackedMetaTvData' } & Pick<
+              AutoTrackedMetaTvData,
+              'season' | 'episode'
+            >
+          >;
+        };
+    };
+};
+
 export type SeasonsQueryVariables = Exact<{
   itemId: Scalars['ID'];
 }>;
@@ -1080,18 +1116,16 @@ export type SeasonsQuery = { __typename?: 'Query' } & {
 export type SettingsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SettingsQuery = { __typename?: 'Query' } & {
-  settings?: Maybe<
-    { __typename?: 'Settings' } & {
-      general: { __typename?: 'GeneralSettings' } & Pick<
-        GeneralSettings,
-        'autoConvert'
-      >;
-      extension: { __typename?: 'ExtensionSettings' } & Pick<
-        ExtensionSettings,
-        'autoTrack' | 'minLengthSeconds' | 'blacklist'
-      >;
-    }
-  >;
+  settings: { __typename?: 'Settings' } & {
+    general: { __typename?: 'GeneralSettings' } & Pick<
+      GeneralSettings,
+      'autoConvert'
+    >;
+    extension: { __typename?: 'ExtensionSettings' } & Pick<
+      ExtensionSettings,
+      'autoTrack' | 'minLengthSeconds' | 'blacklist'
+    >;
+  };
 };
 
 export const WatchedTvItemPropsFragmentDoc = gql`
@@ -1143,26 +1177,32 @@ export const WatchedCursorPropsFragmentDoc = gql`
   }
   ${WatchedPropsFragmentDoc}
 `;
+export const ItemDataFragmentDoc = gql`
+  fragment ItemData on Item {
+    ... on Movie {
+      id
+      title
+      release_date
+      poster_path
+      backdrop_path
+    }
+    ... on Tv {
+      id
+      name
+      first_air_date
+      poster_path
+      backdrop_path
+    }
+  }
+`;
 export const WatchedItemPropsFragmentDoc = gql`
   fragment WatchedItemProps on Watched {
     itemType
     item {
-      ... on Movie {
-        id
-        title
-        release_date
-        poster_path
-        backdrop_path
-      }
-      ... on Tv {
-        id
-        name
-        first_air_date
-        poster_path
-        backdrop_path
-      }
+      ...ItemData
     }
   }
+  ${ItemDataFragmentDoc}
 `;
 export const WatchedCursorWithItemsPropsFragmentDoc = gql`
   fragment WatchedCursorWithItemsProps on WatchedCursor {
@@ -1824,6 +1864,59 @@ export function useAuthLazyQuery(
 export type AuthQueryHookResult = ReturnType<typeof useAuthQuery>;
 export type AuthLazyQueryHookResult = ReturnType<typeof useAuthLazyQuery>;
 export type AuthQueryResult = Apollo.QueryResult<AuthQuery, AuthQueryVariables>;
+export const IsExtensionCheckDoneDocument = gql`
+  query IsExtensionCheckDone {
+    isExtensionCheckDone @client
+  }
+`;
+
+/**
+ * __useIsExtensionCheckDoneQuery__
+ *
+ * To run a query within a React component, call `useIsExtensionCheckDoneQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsExtensionCheckDoneQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsExtensionCheckDoneQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIsExtensionCheckDoneQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    IsExtensionCheckDoneQuery,
+    IsExtensionCheckDoneQueryVariables
+  >,
+) {
+  return Apollo.useQuery<
+    IsExtensionCheckDoneQuery,
+    IsExtensionCheckDoneQueryVariables
+  >(IsExtensionCheckDoneDocument, baseOptions);
+}
+export function useIsExtensionCheckDoneLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    IsExtensionCheckDoneQuery,
+    IsExtensionCheckDoneQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<
+    IsExtensionCheckDoneQuery,
+    IsExtensionCheckDoneQueryVariables
+  >(IsExtensionCheckDoneDocument, baseOptions);
+}
+export type IsExtensionCheckDoneQueryHookResult = ReturnType<
+  typeof useIsExtensionCheckDoneQuery
+>;
+export type IsExtensionCheckDoneLazyQueryHookResult = ReturnType<
+  typeof useIsExtensionCheckDoneLazyQuery
+>;
+export type IsExtensionCheckDoneQueryResult = Apollo.QueryResult<
+  IsExtensionCheckDoneQuery,
+  IsExtensionCheckDoneQueryVariables
+>;
 export const UserDocument = gql`
   query User($name: String, $id: ID, $cursor: String) {
     user(name: $name, id: $id) {
@@ -1993,9 +2086,11 @@ export const WatchedDocument = gql`
   query Watched($id: ID!) {
     watched(id: $id) {
       ...WatchedProps
+      ...WatchedItemProps
     }
   }
   ${WatchedPropsFragmentDoc}
+  ${WatchedItemPropsFragmentDoc}
 `;
 
 /**
@@ -2267,20 +2362,7 @@ export const AutoTrackedListDocument = gql`
         id
         itemType
         item {
-          ... on Movie {
-            id
-            title
-            release_date
-            poster_path
-            backdrop_path
-          }
-          ... on Tv {
-            id
-            name
-            first_air_date
-            poster_path
-            backdrop_path
-          }
+          ...ItemData
         }
         tvItemType
         tvItem {
@@ -2300,6 +2382,7 @@ export const AutoTrackedListDocument = gql`
       }
     }
   }
+  ${ItemDataFragmentDoc}
   ${WatchedTvItemPropsFragmentDoc}
 `;
 
@@ -2351,6 +2434,81 @@ export type AutoTrackedListLazyQueryHookResult = ReturnType<
 export type AutoTrackedListQueryResult = Apollo.QueryResult<
   AutoTrackedListQuery,
   AutoTrackedListQueryVariables
+>;
+export const AutoTrackedDocument = gql`
+  query AutoTracked($id: ID!) {
+    autoTracked(id: $id) {
+      id
+      itemType
+      item {
+        ...ItemData
+      }
+      tvItemType
+      tvItem {
+        ...WatchedTvItemProps
+      }
+      meta {
+        title
+        filename
+        url
+        provider
+        tvData {
+          season
+          episode
+        }
+      }
+      createdAt
+    }
+  }
+  ${ItemDataFragmentDoc}
+  ${WatchedTvItemPropsFragmentDoc}
+`;
+
+/**
+ * __useAutoTrackedQuery__
+ *
+ * To run a query within a React component, call `useAutoTrackedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAutoTrackedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAutoTrackedQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAutoTrackedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    AutoTrackedQuery,
+    AutoTrackedQueryVariables
+  >,
+) {
+  return Apollo.useQuery<AutoTrackedQuery, AutoTrackedQueryVariables>(
+    AutoTrackedDocument,
+    baseOptions,
+  );
+}
+export function useAutoTrackedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    AutoTrackedQuery,
+    AutoTrackedQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<AutoTrackedQuery, AutoTrackedQueryVariables>(
+    AutoTrackedDocument,
+    baseOptions,
+  );
+}
+export type AutoTrackedQueryHookResult = ReturnType<typeof useAutoTrackedQuery>;
+export type AutoTrackedLazyQueryHookResult = ReturnType<
+  typeof useAutoTrackedLazyQuery
+>;
+export type AutoTrackedQueryResult = Apollo.QueryResult<
+  AutoTrackedQuery,
+  AutoTrackedQueryVariables
 >;
 export const SeasonsDocument = gql`
   query Seasons($itemId: ID!) {

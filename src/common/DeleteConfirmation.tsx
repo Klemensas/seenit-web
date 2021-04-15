@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Intent } from '@blueprintjs/core';
 
-import BlockingAlert from '../common/BlockingAlert';
+import BlockingAlert from './BlockingAlert';
 
 export default function DeleteConfirmation({
   title,
@@ -13,8 +13,8 @@ export default function DeleteConfirmation({
   title: ReactNode;
   isOpen: boolean;
   isLoading?: boolean;
-  onCancel: any;
-  onConfirm: any;
+  onCancel?: () => void;
+  onConfirm: () => void;
 }) {
   return (
     <BlockingAlert

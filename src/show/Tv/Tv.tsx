@@ -100,6 +100,16 @@ export default function Tv({ match }: RouteComponentProps<TvRouteParams>) {
             }}
           />
         </Switch>
+        {/* <WatchedTvDialog
+          tv={{
+            id: data.tv.id,
+            title: name,
+            poster: data.tv.poster_path || '',
+            seasons,
+          }}
+          editingWatched={editingWatched}
+          onClose={() => setEditingWatched(null)}
+        /> */}
         <WatchedTvDialog
           tv={{
             id: data.tv.id,

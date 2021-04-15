@@ -4,12 +4,7 @@ import { setAuthData } from './helpers';
 export const typeDefs = gql`
   extend type Query {
     auth: User
-  }
-`;
-
-export const isLoggedIn = gql`
-  query Auth {
-    auth @client
+    isExtensionCheckDone: Boolean
   }
 `;
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -7,15 +7,19 @@ import './styles/index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { apolloClient } from './apollo';
+import { container } from './common/helpers/general';
+import ExtensionSetupBlocker from './ExtensionSetupBlocker';
 
 (async () => {
   ReactDOM.render(
-    <ApolloProvider client={await apolloClient()}>
+    <ApolloProvider client={apolloClient}>
       <BrowserRouter>
-        <App />
+        <ExtensionSetupBlocker>
+          <App />
+        </ExtensionSetupBlocker>
       </BrowserRouter>
     </ApolloProvider>,
-    document.getElementById('root'),
+    container || null,
   );
 })();
 

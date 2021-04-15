@@ -7,13 +7,14 @@ import {
   TvQuery,
   MovieQuery,
   ItemType,
+  ItemDataFragment,
 } from '../graphql';
 import WatchedForm, { EditingWatched } from '../common/WatchedForm';
 
 export type Props = {
   editingWatched: EditingWatched;
   afterSave: () => void;
-  item: TvQuery['tv'] | MovieQuery['movie'];
+  item: TvQuery['tv'] | MovieQuery['movie'] | ItemDataFragment;
 };
 
 export default function WatchedMutationForm({
@@ -81,6 +82,7 @@ export default function WatchedMutationForm({
                 ? editingWatched.autoTracked?.id
                 : undefined,
           },
+          refetchQueries: ['AutoTrackedList'],
         });
 
         await query;

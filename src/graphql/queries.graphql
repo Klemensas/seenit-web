@@ -17,6 +17,10 @@ query Auth {
   }
 }
 
+query IsExtensionCheckDone {
+  isExtensionCheckDone @client
+}
+
 # fragment TvData on Watched {
 #   tvItemType
 #   tvItem
@@ -46,20 +50,7 @@ fragment WatchedProps on Watched {
 fragment WatchedItemProps on Watched {
   itemType
   item {
-    ... on Movie {
-      id
-      title
-      release_date
-      poster_path
-      backdrop_path
-    }
-    ... on Tv {
-      id
-      name
-      first_air_date
-      poster_path
-      backdrop_path
-    }
+    ...ItemData
   }
 }
 
@@ -165,6 +156,7 @@ query Tv($id: ID, $cursor: String) {
 query Watched($id: ID!) {
   watched(id: $id) {
     ...WatchedProps
+    ...WatchedItemProps
   }
 }
 
@@ -247,20 +239,7 @@ query AutoTrackedList($userId: ID!, $cursor: String) {
       id
       itemType
       item {
-        ... on Movie {
-          id
-          title
-          release_date
-          poster_path
-          backdrop_path
-        }
-        ... on Tv {
-          id
-          name
-          first_air_date
-          poster_path
-          backdrop_path
-        }
+        ...ItemData
       }
       tvItemType
       tvItem {
@@ -278,6 +257,49 @@ query AutoTrackedList($userId: ID!, $cursor: String) {
       }
       createdAt
     }
+  }
+}
+
+fragment ItemData on Item {
+  ... on Movie {
+    id
+    title
+    release_date
+    poster_path
+    backdrop_path
+  }
+  ... on Tv {
+    id
+    name
+    first_air_date
+    poster_path
+    backdrop_path
+  }
+}
+
+query AutoTracked($id: ID!) {
+  autoTracked(id: $id) {
+    id
+    itemType
+    item {
+      ...ItemData
+    }
+
+    tvItemType
+    tvItem {
+      ...WatchedTvItemProps
+    }
+    meta {
+      title
+      filename
+      url
+      provider
+      tvData {
+        season
+        episode
+      }
+    }
+    createdAt
   }
 }
 

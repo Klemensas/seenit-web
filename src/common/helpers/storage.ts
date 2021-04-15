@@ -12,6 +12,8 @@ export function getStorageValue<T = object>(key: string) {
 }
 
 export function updateStorage<T = object>(key: string, value: T) {
+  if (!value) return window.localStorage.removeItem(storagePrefix + key);
+
   return window.localStorage.setItem(
     storagePrefix + key,
     JSON.stringify(value),
