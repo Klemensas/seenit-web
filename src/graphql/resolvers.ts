@@ -4,12 +4,7 @@ import { setAuthData } from './helpers';
 export const typeDefs = gql`
   extend type Query {
     auth: User
-  }
-`;
-
-export const isLoggedIn = gql`
-  query Auth {
-    auth @client
+    isExtensionCheckDone: Boolean
   }
 `;
 
@@ -21,7 +16,13 @@ export const resolvers: Resolvers = {
       { cache, client }: { cache: ApolloCache<any>; client: ApolloClient<any> },
     ) => {
       setAuthData(cache);
-      client.resetStore();
+      const currentCache = cache.extract();
+      const preservedCache = {
+        ROOT_QUERY: {
+          isExtensionCheckDone: currentCache.ROOT_QUERY.isExtensionCheckDone,
+        },
+      };
+      cache.restore(preservedCache);
     },
   },
 };
