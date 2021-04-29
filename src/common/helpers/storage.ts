@@ -11,10 +11,11 @@ export function getStorageValue<T = object>(key: string) {
   }
 }
 
-export function updateStorage<T = object>(key: string, value: T) {
+export function updateStorage<T = object | string>(key: string, value: T) {
+  if (!value) return window.localStorage.removeItem(storagePrefix + key);
+
   return window.localStorage.setItem(
     storagePrefix + key,
-    JSON.stringify(value),
+    typeof value === 'string' ? value : JSON.stringify(value),
   );
-  // return new Promise<void>(resolve => chrome.storage.sync.set(value, resolve));
 }
