@@ -3,7 +3,8 @@ import { Dialog } from '@blueprintjs/core';
 
 import { EditingWatched } from '../common/WatchedForm';
 import WatchedMutationForm from '../common/WatchedMutationForm';
-import { TvQuery, MovieQuery } from '../graphql';
+import { TvQuery, MovieQuery, ItemDataFragment } from '../graphql';
+import { container } from '../common/helpers/general';
 
 export default function WatchedDialog({
   editingWatched,
@@ -11,7 +12,7 @@ export default function WatchedDialog({
   onClose,
 }: {
   editingWatched: EditingWatched;
-  item: TvQuery['tv'] | MovieQuery['movie'];
+  item: TvQuery['tv'] | MovieQuery['movie'] | ItemDataFragment;
   onClose: () => void;
 }) {
   const name = 'name' in item ? item.name : item.title;
@@ -23,6 +24,7 @@ export default function WatchedDialog({
       canOutsideClickClose={false}
       onClose={onClose}
       isOpen={!!editingWatched}
+      portalContainer={container}
       lazy
     >
       <WatchedMutationForm

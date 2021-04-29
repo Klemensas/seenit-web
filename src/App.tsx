@@ -15,6 +15,7 @@ import Tv from './show/Tv/Tv';
 import Settings from './settings/Settings';
 import NotFound from './generic/NotFound';
 import BasicLayout from './layouts/BasicLayout';
+import DialogRoutes from './DialogRoutes';
 
 export default function App() {
   return (
@@ -40,6 +41,8 @@ export default function App() {
             </Switch>
           </BasicLayout>
         </Switch>
+
+        <DialogRoutes />
       </div>
     </>
   );

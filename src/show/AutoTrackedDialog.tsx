@@ -7,19 +7,21 @@ import {
   useTvQuery,
   useMovieQuery,
   ItemType,
+  ItemDataFragment,
 } from '../graphql';
 import { Dialog, Spinner, Code } from '@blueprintjs/core';
 import Search from '../common/Search';
 import { RelativeDate } from '../common/RelativeDate';
 import { EditingWatched } from '../common/WatchedForm';
 import WatchedMutationForm from '../common/WatchedMutationForm';
+import { container } from '../common/helpers/general';
 
 export default function AutoTrackedDialog({
   item,
   editingWatched,
   onClose,
 }: {
-  item: MovieQuery['movie'] | TvQuery['tv'] | null;
+  item?: MovieQuery['movie'] | TvQuery['tv'] | ItemDataFragment | null;
   editingWatched: EditingWatched;
   onClose: () => void;
 }) {
@@ -55,6 +57,7 @@ export default function AutoTrackedDialog({
       isOpen={!!editingWatched}
       lazy
       onClose={onClose}
+      portalContainer={container}
     >
       {!item &&
         editingWatched &&
@@ -68,7 +71,7 @@ export default function AutoTrackedDialog({
             {meta && meta.title && (
               <p className="mb-1">
                 <span>Title read as </span>
-                <Code>{meta.title}</Code>{' '}
+                <Code>{meta.title}</Code>
               </p>
             )}
             {meta && meta.tvData && (

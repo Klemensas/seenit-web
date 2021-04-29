@@ -8,12 +8,10 @@ import {
   useAutoTrackedListQuery,
   useConvertAutoTrackedMutation,
   useRemoveAutoTrackedMutation,
-  AutoTrackedListQuery,
 } from '../graphql';
 import Seen from '../common/Seen';
 import DeleteConfirmation from '../common/DeleteConfirmation';
-import { AutoTrackedItem } from './AutoTrackedItems';
-import AutoTrackedDialog from '../show/AutoTrackedDialog';
+import { AutoTrackedItems } from './AutoTrackedItems';
 import { AppToaster } from '../common/toaster';
 
 export default function Dashboard() {
@@ -40,10 +38,10 @@ export default function Dashboard() {
   });
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [editingAutoTracked, setEditingAutoTracked] = useState<
-    null | AutoTrackedListQuery['autoTrackedList']['autoTracked'][0]
-  >(null);
-  const [pendingRemoval, setPendingRemoval] = useState<any>();
+  const [pendingRemoval, setPendingRemoval] = useState<{
+    title: React.ReactNode;
+    onConfirm: () => void;
+  } | null>();
 
   if (!userData) return null;
   if (!data?.user?.watched) return null;
@@ -123,6 +121,7 @@ export default function Dashboard() {
                         await removeAutoTracked({
                           variables: { ids: selectedIds },
                         });
+                        setSelectedIds([]);
                         setPendingRemoval(null);
                       },
                     })
@@ -157,7 +156,7 @@ export default function Dashboard() {
                     }}
                   />
                 )}
-                <AutoTrackedItem
+                <AutoTrackedItems
                   id={id}
                   createdAt={createdAt}
                   meta={meta}
@@ -171,7 +170,6 @@ export default function Dashboard() {
                   onSave={() =>
                     convertAutoTracked({ variables: { ids: [id] } })
                   }
-                  onEdit={() => setEditingAutoTracked(arr[i])}
                   onRemove={() =>
                     setPendingRemoval({
                       title: (
@@ -205,21 +203,6 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-      {editingAutoTracked && (
-        <AutoTrackedDialog
-          item={editingAutoTracked.item as any}
-          editingWatched={{
-            isEditing: false,
-            autoTracked: {
-              id: editingAutoTracked.id,
-              createdAt: editingAutoTracked.createdAt,
-              meta: editingAutoTracked.meta,
-              tvItemId: editingAutoTracked.tvItem?.id,
-            },
-          }}
-          onClose={() => setEditingAutoTracked(null)}
-        />
-      )}
       {pendingRemoval && (
         <DeleteConfirmation
           isOpen={!!pendingRemoval}

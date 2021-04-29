@@ -104,124 +104,122 @@ export default function WatchedTvForm({
 
   const options = getSelectOptions(seasons);
   return (
-    <React.Fragment>
-      <div className="flex p-3">
-        {item.poster && (
-          <div className="pr-3">
-            <img
-              src={`https://image.tmdb.org/t/p/w185${item.poster}`}
-              alt={`Poster for ${item.title}`}
-              className="img-responsive"
-            />
-          </div>
-        )}
-        <Formik<WatchedValues>
-          enableReinitialize
-          initialValues={values}
-          onSubmit={onSubmit}
-        >
-          {({ values, handleChange, handleSubmit, setFieldValue }) => (
-            <form className="flex-grow" onSubmit={handleSubmit}>
-              <FormGroup label="Watched on" labelFor="createdAt">
-                <DateInput
-                  popoverProps={{
-                    fill: true,
-                  }}
-                  formatDate={date => date.toLocaleString()}
-                  parseDate={str => new Date(str)}
-                  placeholder="M/D/YYYY"
-                  onChange={date => setFieldValue('createdAt', +new Date(date))}
-                  value={new Date(values.createdAt)}
-                />
-              </FormGroup>
-              <FormGroup
-                label="Episode"
-                labelFor="tvItemId"
-                helperText="Empty episode field indicates the whole show"
-              >
-                <Suggest<ItemSelection>
-                  selectedItem={
-                    options.find(({ id }) => id === values.tvItemId) || null
-                  }
-                  inputValueRenderer={({ name, seasonName }) =>
-                    `${name} - ${seasonName}`
-                  }
-                  itemRenderer={renderEpisode}
-                  items={options}
-                  itemListPredicate={itemFilter}
-                  onItemSelect={({ id }) => setFieldValue('tvItemId', id)}
-                  noResults={<MenuItem disabled text="Got nothing :(" />}
-                  popoverProps={{
-                    minimal: true,
-                    fill: true,
-                    usePortal: false,
-                    position: PopoverPosition.BOTTOM,
-                  }}
-                  disabled={isSeasonsLoading}
-                  inputProps={{
-                    placeholder: 'Select an episode',
-                    rightElement: !isSeasonsLoading ? (
-                      <Tooltip content="Clear selection">
-                        <Button
-                          icon="cross"
-                          minimal
-                          onClick={() => setFieldValue('tvItemId', null)}
-                        />
-                      </Tooltip>
-                    ) : (
-                      <Tooltip content="Loading season data">
-                        <Spinner size={16} />
-                      </Tooltip>
-                    ),
-                  }}
-                  className="select-popover-centered"
-                />
-              </FormGroup>
-              <FormGroup label="Review" labelFor="review">
-                <TextArea
-                  fill
-                  growVertically
-                  large
-                  name="review"
-                  onChange={handleChange}
-                  value={values.review}
-                  placeholder="Any thoughts on what you watched?"
-                />
-              </FormGroup>
-              <FormGroup label="Rating" labelFor="rating">
-                <div className="flex flex-content-between flex-items-center">
-                  <div>
-                    <RatingInput
-                      value={values.rating || 0}
-                      className="seen-rating"
-                      onChange={value => setFieldValue('rating', value)}
-                    />{' '}
-                    <span>{values.rating || '?'}/5</span>
-                  </div>
-                  {values.rating && (
-                    <Button
-                      icon="cross"
-                      intent={Intent.DANGER}
-                      minimal
-                      small
-                      onClick={() => setFieldValue('rating', undefined)}
-                    />
-                  )}
-                </div>
-              </FormGroup>
-              <Button
-                type="submit"
-                large
+    <div className="flex p-3">
+      {item.poster && (
+        <div className="pr-3">
+          <img
+            src={`https://image.tmdb.org/t/p/w185${item.poster}`}
+            alt={`Poster for ${item.title}`}
+            className="img-responsive"
+          />
+        </div>
+      )}
+      <Formik<WatchedValues>
+        enableReinitialize
+        initialValues={values}
+        onSubmit={onSubmit}
+      >
+        {({ values, handleChange, handleSubmit, setFieldValue }) => (
+          <form className="flex-grow" onSubmit={handleSubmit}>
+            <FormGroup label="Watched on" labelFor="createdAt">
+              <DateInput
+                popoverProps={{
+                  fill: true,
+                }}
+                formatDate={date => date.toLocaleString()}
+                parseDate={str => new Date(str)}
+                placeholder="M/D/YYYY"
+                onChange={date => setFieldValue('createdAt', +new Date(date))}
+                value={new Date(values.createdAt)}
+              />
+            </FormGroup>
+            <FormGroup
+              label="Episode"
+              labelFor="tvItemId"
+              helperText="Empty episode field indicates the whole show"
+            >
+              <Suggest<ItemSelection>
+                selectedItem={
+                  options.find(({ id }) => id === values.tvItemId) || null
+                }
+                inputValueRenderer={({ name, seasonName }) =>
+                  `${name} - ${seasonName}`
+                }
+                itemRenderer={renderEpisode}
+                items={options}
+                itemListPredicate={itemFilter}
+                onItemSelect={({ id }) => setFieldValue('tvItemId', id)}
+                noResults={<MenuItem disabled text="Got nothing :(" />}
+                popoverProps={{
+                  minimal: true,
+                  fill: true,
+                  usePortal: false,
+                  position: PopoverPosition.BOTTOM,
+                }}
+                disabled={isSeasonsLoading}
+                inputProps={{
+                  placeholder: 'Select an episode',
+                  rightElement: !isSeasonsLoading ? (
+                    <Tooltip content="Clear selection">
+                      <Button
+                        icon="cross"
+                        minimal
+                        onClick={() => setFieldValue('tvItemId', null)}
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip content="Loading season data">
+                      <Spinner size={16} />
+                    </Tooltip>
+                  ),
+                }}
+                className="select-popover-centered"
+              />
+            </FormGroup>
+            <FormGroup label="Review" labelFor="review">
+              <TextArea
                 fill
-                intent={Intent.PRIMARY}
-                loading={isLoading}
-              >
-                Add
-              </Button>
-            </form>
-          )}
-        </Formik>
-      </div>
-    </React.Fragment>
+                growVertically
+                large
+                name="review"
+                onChange={handleChange}
+                value={values.review}
+                placeholder="Any thoughts on what you watched?"
+              />
+            </FormGroup>
+            <FormGroup label="Rating" labelFor="rating">
+              <div className="flex flex-content-between flex-items-center">
+                <div>
+                  <RatingInput
+                    value={values.rating || 0}
+                    className="seen-rating"
+                    onChange={value => setFieldValue('rating', value)}
+                  />{' '}
+                  <span>{values.rating || '?'}/5</span>
+                </div>
+                {values.rating && (
+                  <Button
+                    icon="cross"
+                    intent={Intent.DANGER}
+                    minimal
+                    small
+                    onClick={() => setFieldValue('rating', undefined)}
+                  />
+                )}
+              </div>
+            </FormGroup>
+            <Button
+              type="submit"
+              large
+              fill
+              intent={Intent.PRIMARY}
+              loading={isLoading}
+            >
+              Add
+            </Button>
+          </form>
+        )}
+      </Formik>
+    </div>
   );
 }

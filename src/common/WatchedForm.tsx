@@ -1,6 +1,12 @@
 import React from 'react';
 
-import { MovieQuery, TvQuery, WatchesQuery, AutoTrackedMeta } from '../graphql';
+import {
+  MovieQuery,
+  TvQuery,
+  WatchesQuery,
+  AutoTrackedMeta,
+  ItemDataFragment,
+} from '../graphql';
 import WatchedMovieForm from './WatchedMovieForm';
 import WatchedTvForm from './WatchedTvForm';
 import { FormikConfig } from 'formik';
@@ -35,7 +41,7 @@ type Props = {
   editingWatched: EditingWatched;
   onSubmit: FormikConfig<WatchedValues>['onSubmit'];
   isLoading: boolean;
-  item: TvQuery['tv'] | MovieQuery['movie'];
+  item: TvQuery['tv'] | MovieQuery['movie'] | ItemDataFragment;
 };
 
 export default function WatchedForm({
@@ -81,7 +87,7 @@ export default function WatchedForm({
           id: item.id,
           title: item.name,
           poster: item.poster_path || '',
-          seasons: item.seasons,
+          seasons: 'seasons' in item ? item.seasons : undefined,
         }}
         values={values}
         onSubmit={onSubmit}
