@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/static/css/main.d6bc1cb1.chunk.css",
+    "main.js": "/static/js/main.38481d62.chunk.js",
+    "main.js.map": "/static/js/main.38481d62.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.694ca529.js",
+    "runtime-main.js.map": "/static/js/runtime-main.694ca529.js.map",
+    "static/css/2.e2499eb2.chunk.css": "/static/css/2.e2499eb2.chunk.css",
+    "static/js/2.00a90906.chunk.js": "/static/js/2.00a90906.chunk.js",
+    "static/js/2.00a90906.chunk.js.map": "/static/js/2.00a90906.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.a76232666899c26d71709af57c5a6c67.js": "/precache-manifest.a76232666899c26d71709af57c5a6c67.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.e2499eb2.chunk.css.map": "/static/css/2.e2499eb2.chunk.css.map",
+    "static/css/main.d6bc1cb1.chunk.css.map": "/static/css/main.d6bc1cb1.chunk.css.map",
+    "static/js/2.00a90906.chunk.js.LICENSE": "/static/js/2.00a90906.chunk.js.LICENSE",
+    "static/media/chrome.svg": "/static/media/chrome.fb7a4d16.svg",
+    "static/media/eyes.dae4ec2d.svg": "/static/media/eyes.dae4ec2d.svg",
+    "static/media/vlc.svg": "/static/media/vlc.78c4bd2f.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.694ca529.js",
+    "static/css/2.e2499eb2.chunk.css",
+    "static/js/2.00a90906.chunk.js",
+    "static/css/main.d6bc1cb1.chunk.css",
+    "static/js/main.38481d62.chunk.js"
+  ]
+}
