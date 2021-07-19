@@ -311,13 +311,6 @@ query Seasons($itemId: ID!) {
 
 query Settings {
   settings {
-    general {
-      autoConvert
-    }
-    extension {
-      autoTrack
-      minLengthSeconds
-      blacklist
-    }
+    ...ManagedSettings
   }
 }

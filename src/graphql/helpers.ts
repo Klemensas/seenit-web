@@ -5,6 +5,8 @@ import {
   RegisterMutation,
   AuthQuery,
   SettingsDocument,
+  AuthDocument,
+  ManagedSettingsFragment,
 } from '.';
 import { updateStorage } from '../common/helpers/storage';
 
@@ -30,14 +32,17 @@ export const setAuthData = <T>(
 
 export const updateUserSettings = <T>(
   cache: ApolloCache<T>,
-  user: NonNullable<AuthQuery['auth']>,
+  settings: ManagedSettingsFragment,
+  user = cache.readQuery<AuthQuery>({ query: AuthDocument })?.auth,
 ) => {
-  updateStorage('userData', user);
+  if (!user) return
+
+  updateStorage('userData', {  ...user, settings });
 
   return cache.writeQuery({
     query: SettingsDocument,
     data: {
-      settings: user.settings,
+      settings,
     },
   });
 };

@@ -118,7 +118,7 @@ export type Movie = {
   poster_path?: Maybe<Scalars['String']>;
   production_companies?: Maybe<Array<Maybe<Company>>>;
   production_countries?: Maybe<Array<Maybe<Country>>>;
-  release_date: Scalars['String'];
+  release_date?: Maybe<Scalars['String']>;
   revenue?: Maybe<Scalars['Int']>;
   runtime?: Maybe<Scalars['Int']>;
   spoken_languages?: Maybe<Array<Maybe<Language>>>;
@@ -243,10 +243,10 @@ export type Tv = {
   backdrop_path?: Maybe<Scalars['String']>;
   created_by?: Maybe<Array<Maybe<Author>>>;
   episode_run_time?: Maybe<Array<Maybe<Scalars['Int']>>>;
-  first_air_date: Scalars['String'];
+  first_air_date?: Maybe<Scalars['String']>;
   genres?: Maybe<Array<Maybe<Genre>>>;
   homepage: Scalars['String'];
-  in_production: Scalars['Boolean'];
+  in_production?: Maybe<Scalars['Boolean']>;
   languages?: Maybe<Array<Maybe<Scalars['String']>>>;
   last_air_date: Scalars['String'];
   last_episode_to_air?: Maybe<Episode>;
@@ -416,6 +416,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   _?: Maybe<Scalars['Boolean']>;
   addAutoTracked: AutoTrackedResult;
+  addToExtensionBlacklist: Settings;
   addWatched: Watched;
   convertAutoTracked: ConvertedAutoTracked;
   editWatched: Watched;
@@ -434,6 +435,10 @@ export type MutationAddAutoTrackedArgs = {
   itemType?: Maybe<ItemType>;
   tvItemId?: Maybe<Scalars['ID']>;
   tvItemType?: Maybe<TvItemType>;
+};
+
+export type MutationAddToExtensionBlacklistArgs = {
+  blacklistItem: Scalars['String'];
 };
 
 export type MutationAddWatchedArgs = {
@@ -763,22 +768,24 @@ export type ConvertAutoTrackedMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
+export type ManagedSettingsFragment = { __typename?: 'Settings' } & {
+  general: { __typename?: 'GeneralSettings' } & Pick<
+    GeneralSettings,
+    'autoConvert'
+  >;
+  extension: { __typename?: 'ExtensionSettings' } & Pick<
+    ExtensionSettings,
+    'autoTrack' | 'minLengthSeconds' | 'blacklist'
+  >;
+};
+
 export type UpdateSettingsMutationVariables = Exact<{
   general: GeneralSettingsInput;
   extension: ExtensionSettingsInput;
 }>;
 
 export type UpdateSettingsMutation = { __typename?: 'Mutation' } & {
-  updateSettings: { __typename?: 'Settings' } & {
-    general: { __typename?: 'GeneralSettings' } & Pick<
-      GeneralSettings,
-      'autoConvert'
-    >;
-    extension: { __typename?: 'ExtensionSettings' } & Pick<
-      ExtensionSettings,
-      'autoTrack' | 'minLengthSeconds' | 'blacklist'
-    >;
-  };
+  updateSettings: { __typename?: 'Settings' } & ManagedSettingsFragment;
 };
 
 export type AuthQueryVariables = Exact<{ [key: string]: never }>;
@@ -1116,18 +1123,21 @@ export type SeasonsQuery = { __typename?: 'Query' } & {
 export type SettingsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SettingsQuery = { __typename?: 'Query' } & {
-  settings: { __typename?: 'Settings' } & {
-    general: { __typename?: 'GeneralSettings' } & Pick<
-      GeneralSettings,
-      'autoConvert'
-    >;
-    extension: { __typename?: 'ExtensionSettings' } & Pick<
-      ExtensionSettings,
-      'autoTrack' | 'minLengthSeconds' | 'blacklist'
-    >;
-  };
+  settings: { __typename?: 'Settings' } & ManagedSettingsFragment;
 };
 
+export const ManagedSettingsFragmentDoc = gql`
+  fragment ManagedSettings on Settings {
+    general {
+      autoConvert
+    }
+    extension {
+      autoTrack
+      minLengthSeconds
+      blacklist
+    }
+  }
+`;
 export const WatchedTvItemPropsFragmentDoc = gql`
   fragment WatchedTvItemProps on TvItem {
     ... on Episode {
@@ -1754,16 +1764,10 @@ export const UpdateSettingsDocument = gql`
     $extension: ExtensionSettingsInput!
   ) {
     updateSettings(general: $general, extension: $extension) {
-      general {
-        autoConvert
-      }
-      extension {
-        autoTrack
-        minLengthSeconds
-        blacklist
-      }
+      ...ManagedSettings
     }
   }
+  ${ManagedSettingsFragmentDoc}
 `;
 export type UpdateSettingsMutationFn = Apollo.MutationFunction<
   UpdateSettingsMutation,
@@ -2563,16 +2567,10 @@ export type SeasonsQueryResult = Apollo.QueryResult<
 export const SettingsDocument = gql`
   query Settings {
     settings {
-      general {
-        autoConvert
-      }
-      extension {
-        autoTrack
-        minLengthSeconds
-        blacklist
-      }
+      ...ManagedSettings
     }
   }
+  ${ManagedSettingsFragmentDoc}
 `;
 
 /**
