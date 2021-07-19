@@ -14,14 +14,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  background-color: #212423;
-  color: #f0ffee;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.app-container {
+  min-height: 100vh;
+
+  &.bp3-dark {
+    background-color: #212423;
+  }
 }
 
 // Override dialog with unlimited width
@@ -126,6 +126,7 @@ code {
   display: flex;
   align-items: center;
   font-weight: 700;
+  color: black;
 
   .logo-eyes {
     display: inline-flex;
@@ -139,7 +140,6 @@ code {
 
 .navigation-container {
   padding-top: $pt-navbar-height;
-  color: black;
 
   a {
     color: inherit;
