@@ -2,7 +2,7 @@ import React from 'react';
 import {
   H1,
   H2,
-  Switch,
+  Checkbox,
   FormGroup,
   NumericInput,
   Button,
@@ -23,16 +23,12 @@ export default function Settings() {
     pollInterval: 60000,
     fetchPolicy: 'network-only',
   });
-  const { data: localUser } = useAuthQuery();
   const currentSettings = data?.settings;
   const [updateSettings] = useUpdateSettingsMutation({
     update: (cache, { data }) => {
       if (!data) return;
 
-      updateUserSettings(cache, {
-        ...localUser?.auth!,
-        settings: data.updateSettings,
-      });
+      updateUserSettings(cache, data.updateSettings);
     },
   });
 
@@ -75,7 +71,7 @@ export default function Settings() {
                   label="Auto tracked"
                   helperText="Enabling this publishes identified auto tracked items directly to your watched list instead of saving them as a draft first"
                 >
-                  <Switch
+                  <Checkbox
                     name="general.autoConvert"
                     label="Automatically publish eligible items"
                     checked={values.general.autoConvert}
@@ -91,7 +87,7 @@ export default function Settings() {
                   label="Tracking"
                   helperText="Enabling this removes the watched popup after finishing a video and instead automatically saves the item as a draft"
                 >
-                  <Switch
+                  <Checkbox
                     name="extension.autoTrack"
                     label="Automatically track finished videos"
                     checked={values.extension.autoTrack}
