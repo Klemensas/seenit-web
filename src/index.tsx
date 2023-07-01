@@ -7,7 +7,6 @@ import './styles/index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { apolloClient } from './apollo';
-import { container } from './common/helpers/general';
 import ExtensionSetupBlocker from './ExtensionSetupBlocker';
 
 (async () => {
@@ -19,7 +18,7 @@ import ExtensionSetupBlocker from './ExtensionSetupBlocker';
         </ExtensionSetupBlocker>
       </BrowserRouter>
     </ApolloProvider>,
-    container || null,
+    document.getElementById('root'),
   );
 })();
 

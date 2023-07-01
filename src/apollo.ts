@@ -2,6 +2,7 @@ import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
 import { BatchHttpLink } from '@apollo/client/link/batch-http';
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
+import { createUploadLink } from 'apollo-upload-client';
 
 import { resolvers, typeDefs } from './graphql/resolvers';
 import { getStorageValue } from './common/helpers/storage';
@@ -63,9 +64,10 @@ export const cache = new InMemoryCache({
   // },
 });
 
+const uri = `http://localhost:9000/graphql`;
+// const uri = `https://server.seenit.show/graphql`
 const httpLink = new BatchHttpLink({
-  uri: `http://localhost:9000/graphql`,
-  // uri: `https://server.seenit.show/graphql`,
+  uri,
 });
 
 const authLink = setContext(async request => {
@@ -94,6 +96,11 @@ export const apolloClient = new ApolloClient({
   //     fetchPolicy: 'network-only',
   //   },
   // },
-  link: ApolloLink.from([errorLink, authLink, httpLink]),
+  link: ApolloLink.from([
+    errorLink,
+    authLink,
+    // httpLink,
+    createUploadLink({ uri }),
+  ]),
   typeDefs,
 });

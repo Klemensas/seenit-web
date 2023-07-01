@@ -10,7 +10,7 @@ import {
   MaybeElement,
   IconName,
 } from '@blueprintjs/core';
-import { container } from './helpers/general';
+import { getAppContainer } from './helpers/general';
 
 export default function BlockingAlert({
   canEscapeKeyCancel = false,
@@ -43,7 +43,7 @@ export default function BlockingAlert({
   return (
     <Dialog
       {...overlayProps}
-      portalContainer={container}
+      portalContainer={getAppContainer()}
       className={classNames(Classes.ALERT, className)}
       canEscapeKeyClose={canEscapeKeyCancel && !isLoading}
       canOutsideClickClose={canOutsideClickCancel && !isLoading}

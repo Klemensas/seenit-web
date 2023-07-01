@@ -35,6 +35,8 @@ $directions: (
   ),
 );
 
+$main-background: #212423;
+
 @each $shorthand, $property in $spacings {
   .#{$shorthand} {
     @each $size, $value in $sizes {
@@ -86,5 +88,9 @@ $directions: (
 
   &-content-between {
     justify-content: space-between;
+  }
+
+  &-content-end {
+    justify-content: end;
   }
 }

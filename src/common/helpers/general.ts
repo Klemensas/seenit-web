@@ -7,4 +7,7 @@ export const preventBubbling = <T extends SyntheticEvent>(
   cb?.(event);
 };
 
-export const container = document.getElementById('root') || undefined;
+let container: HTMLElement | undefined;
+
+export const getAppContainer = () =>
+  container || (container = document.getElementById('app-main') || undefined);

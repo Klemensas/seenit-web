@@ -221,13 +221,18 @@ query Reviews(
   }
 }
 
+fragment SearchItemData on SearchItem {
+  id
+  tmdbId
+  title
+  release_date
+  poster_path
+  type
+}
+
 query SearchContent($title: String!) {
   searchContent(title: $title) {
-    id
-    tmdbId
-    title
-    release_date
-    type
+    ...SearchItemData
   }
 }
 
@@ -312,5 +317,40 @@ query Seasons($itemId: ID!) {
 query Settings {
   settings {
     ...ManagedSettings
+  }
+}
+
+fragment WatchedImportData on WatchedImport {
+  tmdbId
+  itemId
+  itemType
+  tvItemId
+  tvItemType
+  createdAt
+  rating {
+    value
+  }
+  review {
+    body
+  }
+  itemType
+  item {
+    ...SearchItemData
+  }
+}
+
+query ImportLetterboxd($file: Upload!) {
+  importLetterboxd(file: $file) {
+    original {
+      date
+      name
+      year
+      watchedDate
+      rating
+      review
+    }
+    imported {
+      ...WatchedImportData
+    }
   }
 }

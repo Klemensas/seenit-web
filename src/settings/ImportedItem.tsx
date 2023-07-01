@@ -9,13 +9,13 @@ import {
 } from '@blueprintjs/core';
 import { Link, useLocation } from 'react-router-dom';
 
-import { AutoTrackedListQuery } from '../graphql';
+import { ImportLetterboxdQuery } from '../graphql';
 import { formatTvString } from '../common/helpers/watched';
 import { RelativeDate } from '../common/RelativeDate';
 import { preventBubbling } from '../common/helpers/general';
-import { DialogQueryParams } from '../common/dialog/query-params';
+import Rating, { RatingSize } from '../common/Rating';
 
-type Props = AutoTrackedListQuery['autoTrackedList']['autoTracked'][0] & {
+type Props = ImportLetterboxdQuery['importLetterboxd'][0] & {
   isSelected: boolean;
   onSelect: () => void;
   onDeselect: () => void;
@@ -23,22 +23,29 @@ type Props = AutoTrackedListQuery['autoTrackedList']['autoTracked'][0] & {
   onRemove: () => void;
 };
 
-export function AutoTrackedItems({
-  id,
-  createdAt,
-  meta,
-  item,
-  tvItem,
+export function ImportedItem({
+  imported,
+  original,
   isSelected,
   onSelect,
   onDeselect,
   onSave,
   onRemove,
 }: Props) {
-  const name = item ? ('title' in item ? item.title : item.name) : '';
+  let item: any;
+  let tvItem: any;
   const location = useLocation();
   const search = new URLSearchParams(location.search);
-  search.set(DialogQueryParams.EditingAutoTracked, id);
+  // search.set(DialogQueryParams.EditingAutoTracked, id);
+
+  if (imported) {
+    imported = {
+      ...imported,
+      review: {
+        body: 'laba diena su vistiena',
+      },
+    };
+  }
 
   return (
     <Card
@@ -46,59 +53,74 @@ export function AutoTrackedItems({
       elevation={isSelected ? 4 : undefined}
       onClick={isSelected ? onDeselect : onSelect}
     >
-      {item && (
+      {imported && (
         <>
-          <div>
+          <div style={{ position: 'relative' }}>
             <img
               width="300"
               height="200"
               className="img-responsive"
-              src={`https://image.tmdb.org/t/p/w342${item.poster_path}`}
-              alt={`${name} poster`}
+              src={`https://image.tmdb.org/t/p/w342${imported.item.poster_path}`}
+              alt={`${imported.item.title} poster`}
             />
-          </div>
-
-          <div className="p-3 title">
-            <div className="flex flex-content-between flex-items-center">
-              <strong className="bp3-text-large bp3-text-overflow-ellipsis pr-2">
-                {name}
-              </strong>
-              <div>{formatTvString(tvItem)}</div>
+            <div className="item-text-overlay">
+              <div className="item-text-overlay-top p-3 pb-4">
+                <div className="flex flex-content-between flex-items-center">
+                  <strong className="bp3-text-large bp3-text-overflow-ellipsis pr-2">
+                    {imported.item.title}
+                  </strong>
+                  <div>{formatTvString(tvItem) || 'S02E13'}</div>
+                </div>
+                <div className="flex flex-content-between">
+                  <div className="bp3-text-small card-watched-muted">
+                    <RelativeDate date={imported.createdAt} />
+                  </div>
+                  {imported.rating && (
+                    <Rating
+                      value={imported.rating.value * 2}
+                      size={RatingSize.Small}
+                    />
+                  )}
+                </div>
+              </div>
+              {imported.review && (
+                <div className="item-text-overlay-bottom p-3 pt-4">
+                  <div className="text-ellipsis">
+                    <Icon icon="comment" className="pr-2" />
+                    {imported.review.body}
+                  </div>
+                </div>
+              )}
             </div>
-            {createdAt && (
-              <p className="bp3-text-small card-watched-muted">
-                <RelativeDate date={createdAt} />
-              </p>
-            )}
           </div>
         </>
       )}
-      {!item && (
+      {!imported && (
         <NonIdealState
           icon="help"
-          title="Couldn't find item"
+          title="Couldn't match item"
           description={
             <div className="text-left px-2" style={{ width: '100%' }}>
               <div className="mb-3">
                 <strong>Here's what we know:</strong>
               </div>
               <div className="mb-1">
-                Watched <RelativeDate date={createdAt} />
+                {/* Watched <RelativeDate date={watchedDate || date} /> */}
               </div>
-              {meta.title && (
+              {/* {meta.title && (
                 <div className="mb-1">
                   <span>Title read as </span>
                   <Code>{meta.title}</Code>{' '}
                 </div>
-              )}
-              {meta.tvData && (
+              )} */}
+              {/* {meta.tvData && (
                 <div className="mb-1">
                   <span>TV info - </span>
                   {meta.tvData.season && <span>S{meta.tvData.season}</span>}
                   {meta.tvData.episode && <span>E{meta.tvData.episode}</span>}
                 </div>
-              )}
-              {meta.provider && (
+              )} */}
+              {/* {meta.provider && (
                 <div className="mb-1">
                   <span>Tracked on {meta.provider}, from</span>
                   <br />
@@ -131,7 +153,7 @@ export function AutoTrackedItems({
                     </Code>
                   )}
                 </div>
-              )}
+              )} */}
             </div>
           }
         />

@@ -7,8 +7,8 @@ const result: PossibleTypesResultData = {
   possibleTypes: {
     Item: ['Movie', 'Tv'],
     TvItem: ['Season', 'Episode'],
-    AutoTrackedResult: ['AutoTracked', 'Watched'],
     TmdbMedia: ['TmdbMovie', 'TmdbTv'],
+    AutoTrackedResult: ['AutoTracked', 'Watched'],
   },
 };
 export default result;

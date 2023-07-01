@@ -26,6 +26,7 @@ export type Query = {
   autoTracked: AutoTracked;
   autoTrackedList: AutoTrackedCursor;
   episode: Episode;
+  importLetterboxd: Array<ImportResult>;
   isExtensionCheckDone?: Maybe<Scalars['Boolean']>;
   me: User;
   movie: Movie;
@@ -52,6 +53,10 @@ export type QueryAutoTrackedListArgs = {
 
 export type QueryEpisodeArgs = {
   id?: Maybe<Scalars['ID']>;
+};
+
+export type QueryImportLetterboxdArgs = {
+  file: Scalars['Upload'];
 };
 
 export type QueryMovieArgs = {
@@ -99,317 +104,6 @@ export type QueryWatchesArgs = {
   tvItemId?: Maybe<Scalars['ID']>;
   tvItemType?: Maybe<TvItemType>;
   cursor?: Maybe<Scalars['String']>;
-};
-
-export type Movie = {
-  __typename?: 'Movie';
-  id: Scalars['ID'];
-  adult: Scalars['Boolean'];
-  backdrop_path?: Maybe<Scalars['String']>;
-  belongs_to_collection?: Maybe<Collection>;
-  budget: Scalars['Int'];
-  genre?: Maybe<Array<Maybe<Genre>>>;
-  homepage?: Maybe<Scalars['String']>;
-  imdb_id?: Maybe<Scalars['String']>;
-  original_language?: Maybe<Scalars['String']>;
-  original_title?: Maybe<Scalars['String']>;
-  overview: Scalars['String'];
-  popularity?: Maybe<Scalars['Float']>;
-  poster_path?: Maybe<Scalars['String']>;
-  production_companies?: Maybe<Array<Maybe<Company>>>;
-  production_countries?: Maybe<Array<Maybe<Country>>>;
-  release_date?: Maybe<Scalars['String']>;
-  revenue?: Maybe<Scalars['Int']>;
-  runtime?: Maybe<Scalars['Int']>;
-  spoken_languages?: Maybe<Array<Maybe<Language>>>;
-  status?: Maybe<Scalars['String']>;
-  tagline?: Maybe<Scalars['String']>;
-  title: Scalars['String'];
-  video?: Maybe<Scalars['Boolean']>;
-  vote_average: Scalars['Float'];
-  vote_count: Scalars['Int'];
-  tmdbId?: Maybe<Scalars['Int']>;
-  watched: WatchedCursor;
-};
-
-export type MovieWatchedArgs = {
-  cursor?: Maybe<Scalars['String']>;
-  filter?: Maybe<Scalars['String']>;
-};
-
-export type Collection = {
-  __typename?: 'Collection';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  poster_path?: Maybe<Scalars['String']>;
-  backdrop_path?: Maybe<Scalars['String']>;
-};
-
-export type Genre = {
-  __typename?: 'Genre';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type Company = {
-  __typename?: 'Company';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  logo_path?: Maybe<Scalars['String']>;
-  origin_country?: Maybe<Scalars['String']>;
-};
-
-export type Country = {
-  __typename?: 'Country';
-  iso_3166_1?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type Language = {
-  __typename?: 'Language';
-  iso_639_1?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type WatchedCursor = {
-  __typename?: 'WatchedCursor';
-  watched: Array<Watched>;
-  cursor?: Maybe<Scalars['String']>;
-  hasMore: Scalars['Boolean'];
-};
-
-export type Watched = {
-  __typename?: 'Watched';
-  id: Scalars['ID'];
-  tmdbId: Scalars['Int'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  userId: Scalars['ID'];
-  user: User;
-  itemType: ItemType;
-  item: Item;
-  rating?: Maybe<Rating>;
-  review?: Maybe<Review>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  email: Scalars['String'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  watched: WatchedCursor;
-  settings: Settings;
-};
-
-export type UserWatchedArgs = {
-  cursor?: Maybe<Scalars['String']>;
-};
-
-export type Settings = {
-  __typename?: 'Settings';
-  id: Scalars['ID'];
-  general: GeneralSettings;
-  extension: ExtensionSettings;
-  user: User;
-};
-
-export type GeneralSettings = {
-  __typename?: 'GeneralSettings';
-  autoConvert: Scalars['Boolean'];
-};
-
-export type ExtensionSettings = {
-  __typename?: 'ExtensionSettings';
-  autoTrack: Scalars['Boolean'];
-  minLengthSeconds: Scalars['Int'];
-  blacklist: Array<Scalars['String']>;
-};
-
-export enum ItemType {
-  Movie = 'Movie',
-  Tv = 'Tv',
-}
-
-export type Item = Movie | Tv;
-
-export type Tv = {
-  __typename?: 'Tv';
-  id: Scalars['ID'];
-  backdrop_path?: Maybe<Scalars['String']>;
-  created_by?: Maybe<Array<Maybe<Author>>>;
-  episode_run_time?: Maybe<Array<Maybe<Scalars['Int']>>>;
-  first_air_date?: Maybe<Scalars['String']>;
-  genres?: Maybe<Array<Maybe<Genre>>>;
-  homepage: Scalars['String'];
-  in_production?: Maybe<Scalars['Boolean']>;
-  languages?: Maybe<Array<Maybe<Scalars['String']>>>;
-  last_air_date: Scalars['String'];
-  last_episode_to_air?: Maybe<Episode>;
-  name: Scalars['String'];
-  next_episode_to_air?: Maybe<Episode>;
-  networks?: Maybe<Array<Maybe<Network>>>;
-  number_of_episodes: Scalars['Int'];
-  number_of_seasons: Scalars['Int'];
-  origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
-  original_language: Scalars['String'];
-  original_name: Scalars['String'];
-  overview: Scalars['String'];
-  popularity: Scalars['Int'];
-  poster_path?: Maybe<Scalars['String']>;
-  production_companies?: Maybe<Array<Maybe<Company>>>;
-  seasons: Array<Season>;
-  status: Scalars['String'];
-  type: Scalars['String'];
-  vote_average: Scalars['Float'];
-  vote_count: Scalars['Int'];
-  tmdbId?: Maybe<Scalars['Int']>;
-  watched: WatchedCursor;
-};
-
-export type TvWatchedArgs = {
-  cursor?: Maybe<Scalars['String']>;
-  filter?: Maybe<Scalars['String']>;
-};
-
-export type Author = {
-  __typename?: 'Author';
-  id?: Maybe<Scalars['Int']>;
-  credit_id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  gender?: Maybe<Scalars['Int']>;
-  profile_path?: Maybe<Scalars['String']>;
-};
-
-export type Episode = {
-  __typename?: 'Episode';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  overview: Scalars['String'];
-  episode_number: Scalars['Int'];
-  air_date?: Maybe<Scalars['String']>;
-  production_code?: Maybe<Scalars['String']>;
-  still_path?: Maybe<Scalars['String']>;
-  vote_average: Scalars['Float'];
-  vote_count: Scalars['Int'];
-  tmdbId: Scalars['Int'];
-  seasonId: Scalars['ID'];
-  season: Season;
-};
-
-export type Season = {
-  __typename?: 'Season';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  overview: Scalars['String'];
-  air_date?: Maybe<Scalars['String']>;
-  episode_count: Scalars['Int'];
-  poster_path?: Maybe<Scalars['String']>;
-  season_number: Scalars['Int'];
-  tmdbId: Scalars['Int'];
-  tvId: Scalars['ID'];
-  tv: Tv;
-  episodes: Array<Episode>;
-};
-
-export type Network = {
-  __typename?: 'Network';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  logo_path?: Maybe<Scalars['String']>;
-  origin_country?: Maybe<Scalars['String']>;
-};
-
-export type Rating = {
-  __typename?: 'Rating';
-  id: Scalars['ID'];
-  value: Scalars['Float'];
-  tmdbId: Scalars['Int'];
-  userId: Scalars['ID'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  user?: Maybe<User>;
-  watched?: Maybe<Watched>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
-export enum TvItemType {
-  Season = 'Season',
-  Episode = 'Episode',
-}
-
-export type TvItem = Season | Episode;
-
-export type Review = {
-  __typename?: 'Review';
-  id: Scalars['ID'];
-  body: Scalars['String'];
-  tmdbId: Scalars['Int'];
-  userId: Scalars['ID'];
-  user: User;
-  watched: Watched;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
-export type SearchItem = {
-  __typename?: 'SearchItem';
-  id: Scalars['String'];
-  tmdbId: Scalars['Int'];
-  title: Scalars['String'];
-  release_date?: Maybe<Scalars['String']>;
-  type: ItemType;
-};
-
-export type ReviewCursor = {
-  __typename?: 'ReviewCursor';
-  reviews: Array<Review>;
-  cursor?: Maybe<Scalars['String']>;
-  hasMore: Scalars['Boolean'];
-};
-
-export type AutoTrackedCursor = {
-  __typename?: 'AutoTrackedCursor';
-  autoTracked: Array<AutoTracked>;
-  cursor?: Maybe<Scalars['String']>;
-  hasMore: Scalars['Boolean'];
-};
-
-export type AutoTracked = {
-  __typename?: 'AutoTracked';
-  id: Scalars['ID'];
-  userId: Scalars['ID'];
-  user: User;
-  itemType?: Maybe<ItemType>;
-  item?: Maybe<Item>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-  meta: AutoTrackedMeta;
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-};
-
-export type AutoTrackedMeta = {
-  __typename?: 'AutoTrackedMeta';
-  title?: Maybe<Scalars['String']>;
-  tvData?: Maybe<AutoTrackedMetaTvData>;
-  filename?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  provider: Scalars['String'];
-};
-
-export type AutoTrackedMetaTvData = {
-  __typename?: 'AutoTrackedMetaTvData';
-  season?: Maybe<Scalars['String']>;
-  episode?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -489,56 +183,225 @@ export type MutationUpdateSettingsArgs = {
   extension: ExtensionSettingsInput;
 };
 
-export type RatingInput = {
-  id?: Maybe<Scalars['ID']>;
-  value: Scalars['Float'];
+export type Subscription = {
+  __typename?: 'Subscription';
+  _?: Maybe<Scalars['Boolean']>;
 };
 
-export type ReviewInput = {
-  id?: Maybe<Scalars['ID']>;
-  body: Scalars['String'];
+export type Movie = {
+  __typename?: 'Movie';
+  id: Scalars['ID'];
+  adult: Scalars['Boolean'];
+  backdrop_path?: Maybe<Scalars['String']>;
+  belongs_to_collection?: Maybe<Collection>;
+  budget: Scalars['Int'];
+  genre?: Maybe<Array<Maybe<Genre>>>;
+  homepage?: Maybe<Scalars['String']>;
+  imdb_id?: Maybe<Scalars['String']>;
+  original_language?: Maybe<Scalars['String']>;
+  original_title?: Maybe<Scalars['String']>;
+  overview: Scalars['String'];
+  popularity?: Maybe<Scalars['Float']>;
+  poster_path?: Maybe<Scalars['String']>;
+  production_companies?: Maybe<Array<Maybe<Company>>>;
+  production_countries?: Maybe<Array<Maybe<Country>>>;
+  release_date?: Maybe<Scalars['String']>;
+  revenue?: Maybe<Scalars['Int']>;
+  runtime?: Maybe<Scalars['Int']>;
+  spoken_languages?: Maybe<Array<Maybe<Language>>>;
+  status?: Maybe<Scalars['String']>;
+  tagline?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
+  video?: Maybe<Scalars['Boolean']>;
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
+  tmdbId?: Maybe<Scalars['Int']>;
+  watched: WatchedCursor;
+};
+
+export type MovieWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  filter?: Maybe<Scalars['String']>;
+};
+
+export type Genre = {
+  __typename?: 'Genre';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type Collection = {
+  __typename?: 'Collection';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  poster_path?: Maybe<Scalars['String']>;
+  backdrop_path?: Maybe<Scalars['String']>;
+};
+
+export type Company = {
+  __typename?: 'Company';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  logo_path?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Scalars['String']>;
+};
+
+export type Country = {
+  __typename?: 'Country';
+  iso_3166_1?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type Language = {
+  __typename?: 'Language';
+  iso_639_1?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type Tv = {
+  __typename?: 'Tv';
+  id: Scalars['ID'];
+  backdrop_path?: Maybe<Scalars['String']>;
+  created_by?: Maybe<Array<Maybe<Author>>>;
+  episode_run_time?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  first_air_date?: Maybe<Scalars['String']>;
+  genres?: Maybe<Array<Maybe<Genre>>>;
+  homepage: Scalars['String'];
+  in_production?: Maybe<Scalars['Boolean']>;
+  languages?: Maybe<Array<Maybe<Scalars['String']>>>;
+  last_air_date: Scalars['String'];
+  last_episode_to_air?: Maybe<Episode>;
+  name: Scalars['String'];
+  next_episode_to_air?: Maybe<Episode>;
+  networks?: Maybe<Array<Maybe<Network>>>;
+  number_of_episodes: Scalars['Int'];
+  number_of_seasons: Scalars['Int'];
+  origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
+  original_language: Scalars['String'];
+  original_name: Scalars['String'];
+  overview: Scalars['String'];
+  popularity: Scalars['Int'];
+  poster_path?: Maybe<Scalars['String']>;
+  production_companies?: Maybe<Array<Maybe<Company>>>;
+  seasons: Array<Season>;
+  status: Scalars['String'];
+  type: Scalars['String'];
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
+  tmdbId?: Maybe<Scalars['Int']>;
+  watched: WatchedCursor;
+};
+
+export type TvWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  filter?: Maybe<Scalars['String']>;
+};
+
+export type Author = {
+  __typename?: 'Author';
+  id?: Maybe<Scalars['Int']>;
+  credit_id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['Int']>;
+  profile_path?: Maybe<Scalars['String']>;
+};
+
+export type Network = {
+  __typename?: 'Network';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  logo_path?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Scalars['String']>;
+};
+
+export type Season = {
+  __typename?: 'Season';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  overview: Scalars['String'];
+  air_date?: Maybe<Scalars['String']>;
+  episode_count: Scalars['Int'];
+  poster_path?: Maybe<Scalars['String']>;
+  season_number: Scalars['Int'];
+  tmdbId: Scalars['Int'];
+  tvId: Scalars['ID'];
+  tv: Tv;
+  episodes: Array<Episode>;
+};
+
+export type Episode = {
+  __typename?: 'Episode';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  overview: Scalars['String'];
+  episode_number: Scalars['Int'];
+  air_date?: Maybe<Scalars['String']>;
+  production_code?: Maybe<Scalars['String']>;
+  still_path?: Maybe<Scalars['String']>;
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
+  tmdbId: Scalars['Int'];
+  seasonId: Scalars['ID'];
+  season: Season;
+};
+
+export enum ItemType {
+  Movie = 'Movie',
+  Tv = 'Tv',
+}
+
+export enum TvItemType {
+  Season = 'Season',
+  Episode = 'Episode',
+}
+
+export type Item = Movie | Tv;
+
+export type TvItem = Season | Episode;
+
+export type Watched = {
+  __typename?: 'Watched';
+  id: Scalars['ID'];
+  tmdbId: Scalars['Int'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  userId: Scalars['ID'];
+  user: User;
+  itemType: ItemType;
+  item: Item;
+  rating?: Maybe<Rating>;
+  review?: Maybe<Review>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
+
+export type WatchedCursor = {
+  __typename?: 'WatchedCursor';
+  watched: Array<Watched>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  watched: WatchedCursor;
+  settings: Settings;
+};
+
+export type UserWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type LocalAuth = {
   __typename?: 'LocalAuth';
   user: User;
   token: Scalars['String'];
-};
-
-export type AutoTrackedMetaInput = {
-  title?: Maybe<Scalars['String']>;
-  tvData?: Maybe<TvDataInput>;
-  filename?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  provider: Scalars['String'];
-};
-
-export type TvDataInput = {
-  season?: Maybe<Scalars['String']>;
-  episode?: Maybe<Scalars['String']>;
-};
-
-export type AutoTrackedResult = AutoTracked | Watched;
-
-export type ConvertedAutoTracked = {
-  __typename?: 'ConvertedAutoTracked';
-  removedIds: Array<Scalars['ID']>;
-  watched: Array<Watched>;
-};
-
-export type GeneralSettingsInput = {
-  autoConvert: Scalars['Boolean'];
-};
-
-export type ExtensionSettingsInput = {
-  autoTrack: Scalars['Boolean'];
-  minLengthSeconds: Scalars['Int'];
-  blacklist: Array<Scalars['String']>;
-};
-
-export type Subscription = {
-  __typename?: 'Subscription';
-  _?: Maybe<Scalars['Boolean']>;
 };
 
 export type TmdbMovie = {
@@ -559,11 +422,6 @@ export type TmdbMovie = {
   popularity?: Maybe<Scalars['Int']>;
   media_type?: Maybe<TmdbMediaType>;
 };
-
-export enum TmdbMediaType {
-  Movie = 'Movie',
-  Tv = 'Tv',
-}
 
 export type TmdbTv = {
   __typename?: 'TmdbTv';
@@ -595,8 +453,6 @@ export type TmdbPerson = {
   media_type?: Maybe<TmdbMediaType>;
 };
 
-export type TmdbMedia = TmdbMovie | TmdbTv;
-
 export type Search = {
   __typename?: 'Search';
   results?: Maybe<Array<TmdbMedia>>;
@@ -605,10 +461,185 @@ export type Search = {
   total_results: Scalars['Int'];
 };
 
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
+export type SearchItem = {
+  __typename?: 'SearchItem';
+  id: Scalars['String'];
+  tmdbId: Scalars['Int'];
+  title: Scalars['String'];
+  release_date?: Maybe<Scalars['String']>;
+  popularity?: Maybe<Scalars['Float']>;
+  poster_path?: Maybe<Scalars['String']>;
+  type: ItemType;
+};
+
+export type TmdbMedia = TmdbMovie | TmdbTv;
+
+export enum TmdbMediaType {
+  Movie = 'Movie',
+  Tv = 'Tv',
 }
+
+export type Rating = {
+  __typename?: 'Rating';
+  id: Scalars['ID'];
+  value: Scalars['Float'];
+  tmdbId: Scalars['Int'];
+  userId: Scalars['ID'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  user?: Maybe<User>;
+  watched?: Maybe<Watched>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
+
+export type RatingInput = {
+  id?: Maybe<Scalars['ID']>;
+  value: Scalars['Float'];
+};
+
+export type Review = {
+  __typename?: 'Review';
+  id: Scalars['ID'];
+  body: Scalars['String'];
+  tmdbId: Scalars['Int'];
+  userId: Scalars['ID'];
+  user: User;
+  watched: Watched;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
+
+export type ReviewInput = {
+  id?: Maybe<Scalars['ID']>;
+  body: Scalars['String'];
+};
+
+export type ReviewCursor = {
+  __typename?: 'ReviewCursor';
+  reviews: Array<Review>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type AutoTrackedResult = AutoTracked | Watched;
+
+export type AutoTrackedMetaTvData = {
+  __typename?: 'AutoTrackedMetaTvData';
+  season?: Maybe<Scalars['String']>;
+  episode?: Maybe<Scalars['String']>;
+};
+
+export type AutoTrackedMeta = {
+  __typename?: 'AutoTrackedMeta';
+  title?: Maybe<Scalars['String']>;
+  tvData?: Maybe<AutoTrackedMetaTvData>;
+  filename?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+};
+
+export type AutoTracked = {
+  __typename?: 'AutoTracked';
+  id: Scalars['ID'];
+  userId: Scalars['ID'];
+  user: User;
+  itemType?: Maybe<ItemType>;
+  item?: Maybe<Item>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+  meta: AutoTrackedMeta;
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+};
+
+export type TvDataInput = {
+  season?: Maybe<Scalars['String']>;
+  episode?: Maybe<Scalars['String']>;
+};
+
+export type AutoTrackedMetaInput = {
+  title?: Maybe<Scalars['String']>;
+  tvData?: Maybe<TvDataInput>;
+  filename?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+};
+
+export type AutoTrackedCursor = {
+  __typename?: 'AutoTrackedCursor';
+  autoTracked: Array<AutoTracked>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type ConvertedAutoTracked = {
+  __typename?: 'ConvertedAutoTracked';
+  removedIds: Array<Scalars['ID']>;
+  watched: Array<Watched>;
+};
+
+export type Settings = {
+  __typename?: 'Settings';
+  id: Scalars['ID'];
+  general: GeneralSettings;
+  extension: ExtensionSettings;
+  user: User;
+};
+
+export type GeneralSettings = {
+  __typename?: 'GeneralSettings';
+  autoConvert: Scalars['Boolean'];
+};
+
+export type ExtensionSettings = {
+  __typename?: 'ExtensionSettings';
+  autoTrack: Scalars['Boolean'];
+  minLengthSeconds: Scalars['Int'];
+  blacklist: Array<Scalars['String']>;
+};
+
+export type GeneralSettingsInput = {
+  autoConvert: Scalars['Boolean'];
+};
+
+export type ExtensionSettingsInput = {
+  autoTrack: Scalars['Boolean'];
+  minLengthSeconds: Scalars['Int'];
+  blacklist: Array<Scalars['String']>;
+};
+
+export type LetterboxdItem = {
+  __typename?: 'LetterboxdItem';
+  date: Scalars['String'];
+  name: Scalars['String'];
+  year: Scalars['String'];
+  watchedDate?: Maybe<Scalars['String']>;
+  rating?: Maybe<Scalars['String']>;
+  review?: Maybe<Scalars['String']>;
+};
+
+export type WatchedImport = {
+  __typename?: 'WatchedImport';
+  tmdbId: Scalars['Int'];
+  itemId?: Maybe<Scalars['ID']>;
+  itemType: ItemType;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+  createdAt: Scalars['Float'];
+  item: SearchItem;
+  rating?: Maybe<Rating>;
+  review?: Maybe<Review>;
+};
+
+export type ImportResult = {
+  __typename?: 'ImportResult';
+  imported?: Maybe<WatchedImport>;
+  original: LetterboxdItem;
+};
 
 export type UserInput = {
   id: Scalars['ID'];
@@ -1015,17 +1046,17 @@ export type ReviewsQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type SearchItemDataFragment = { __typename?: 'SearchItem' } & Pick<
+  SearchItem,
+  'id' | 'tmdbId' | 'title' | 'release_date' | 'poster_path' | 'type'
+>;
+
 export type SearchContentQueryVariables = Exact<{
   title: Scalars['String'];
 }>;
 
 export type SearchContentQuery = { __typename?: 'Query' } & {
-  searchContent: Array<
-    { __typename?: 'SearchItem' } & Pick<
-      SearchItem,
-      'id' | 'tmdbId' | 'title' | 'release_date' | 'type'
-    >
-  >;
+  searchContent: Array<{ __typename?: 'SearchItem' } & SearchItemDataFragment>;
 };
 
 export type AutoTrackedListQueryVariables = Exact<{
@@ -1124,6 +1155,33 @@ export type SettingsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SettingsQuery = { __typename?: 'Query' } & {
   settings: { __typename?: 'Settings' } & ManagedSettingsFragment;
+};
+
+export type WatchedImportDataFragment = { __typename?: 'WatchedImport' } & Pick<
+  WatchedImport,
+  'tmdbId' | 'itemId' | 'itemType' | 'tvItemId' | 'tvItemType' | 'createdAt'
+> & {
+    rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
+    review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
+    item: { __typename?: 'SearchItem' } & SearchItemDataFragment;
+  };
+
+export type ImportLetterboxdQueryVariables = Exact<{
+  file: Scalars['Upload'];
+}>;
+
+export type ImportLetterboxdQuery = { __typename?: 'Query' } & {
+  importLetterboxd: Array<
+    { __typename?: 'ImportResult' } & {
+      original: { __typename?: 'LetterboxdItem' } & Pick<
+        LetterboxdItem,
+        'date' | 'name' | 'year' | 'watchedDate' | 'rating' | 'review'
+      >;
+      imported?: Maybe<
+        { __typename?: 'WatchedImport' } & WatchedImportDataFragment
+      >;
+    }
+  >;
 };
 
 export const ManagedSettingsFragmentDoc = gql`
@@ -1245,6 +1303,37 @@ export const SeasonPropsFragmentDoc = gql`
       vote_count
     }
   }
+`;
+export const SearchItemDataFragmentDoc = gql`
+  fragment SearchItemData on SearchItem {
+    id
+    tmdbId
+    title
+    release_date
+    poster_path
+    type
+  }
+`;
+export const WatchedImportDataFragmentDoc = gql`
+  fragment WatchedImportData on WatchedImport {
+    tmdbId
+    itemId
+    itemType
+    tvItemId
+    tvItemType
+    createdAt
+    rating {
+      value
+    }
+    review {
+      body
+    }
+    itemType
+    item {
+      ...SearchItemData
+    }
+  }
+  ${SearchItemDataFragmentDoc}
 `;
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
@@ -2300,13 +2389,10 @@ export type ReviewsQueryResult = Apollo.QueryResult<
 export const SearchContentDocument = gql`
   query SearchContent($title: String!) {
     searchContent(title: $title) {
-      id
-      tmdbId
-      title
-      release_date
-      type
+      ...SearchItemData
     }
   }
+  ${SearchItemDataFragmentDoc}
 `;
 
 /**
@@ -2614,4 +2700,71 @@ export type SettingsLazyQueryHookResult = ReturnType<
 export type SettingsQueryResult = Apollo.QueryResult<
   SettingsQuery,
   SettingsQueryVariables
+>;
+export const ImportLetterboxdDocument = gql`
+  query ImportLetterboxd($file: Upload!) {
+    importLetterboxd(file: $file) {
+      original {
+        date
+        name
+        year
+        watchedDate
+        rating
+        review
+      }
+      imported {
+        ...WatchedImportData
+      }
+    }
+  }
+  ${WatchedImportDataFragmentDoc}
+`;
+
+/**
+ * __useImportLetterboxdQuery__
+ *
+ * To run a query within a React component, call `useImportLetterboxdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useImportLetterboxdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useImportLetterboxdQuery({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useImportLetterboxdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ImportLetterboxdQuery,
+    ImportLetterboxdQueryVariables
+  >,
+) {
+  return Apollo.useQuery<ImportLetterboxdQuery, ImportLetterboxdQueryVariables>(
+    ImportLetterboxdDocument,
+    baseOptions,
+  );
+}
+export function useImportLetterboxdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ImportLetterboxdQuery,
+    ImportLetterboxdQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<
+    ImportLetterboxdQuery,
+    ImportLetterboxdQueryVariables
+  >(ImportLetterboxdDocument, baseOptions);
+}
+export type ImportLetterboxdQueryHookResult = ReturnType<
+  typeof useImportLetterboxdQuery
+>;
+export type ImportLetterboxdLazyQueryHookResult = ReturnType<
+  typeof useImportLetterboxdLazyQuery
+>;
+export type ImportLetterboxdQueryResult = Apollo.QueryResult<
+  ImportLetterboxdQuery,
+  ImportLetterboxdQueryVariables
 >;

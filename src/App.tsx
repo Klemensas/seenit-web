@@ -19,7 +19,7 @@ import DialogRoutes from './DialogRoutes';
 
 export default function App() {
   return (
-    <div className="app-container bp3-dark">
+    <div id="app-main" className="app-container bp3-dark">
       <Navigation />
       <div>
         <Switch>

@@ -10,7 +10,7 @@ import {
   TvQuery,
 } from '../../graphql';
 import WatchedTvForm from '../../common/WatchedTvForm';
-import { container } from '../../common/helpers/general';
+import { getAppContainer } from '../../common/helpers/general';
 
 export type EditingWatched =
   | null
@@ -53,7 +53,7 @@ export default function WatchedTvDialog({
       onClose={onClose}
       isOpen={!!editingWatched}
       lazy
-      portalContainer={container}
+      portalContainer={getAppContainer()}
     >
       <WatchedTvForm
         item={tv}

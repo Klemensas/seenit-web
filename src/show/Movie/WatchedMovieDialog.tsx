@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog } from '@blueprintjs/core';
 
 import { WatchesQuery, MovieQuery } from '../../graphql';
-import { container } from '../../common/helpers/general';
+import { getAppContainer } from '../../common/helpers/general';
 
 export type EditingWatched =
   | null
@@ -26,7 +26,7 @@ export default function WatchedMovieDialog({
       onClose={onClose}
       isOpen={!!editingWatched}
       lazy
-      portalContainer={container}
+      portalContainer={getAppContainer()}
     ></Dialog>
   );
 }

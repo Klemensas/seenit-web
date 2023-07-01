@@ -14,7 +14,7 @@ import Search from '../common/Search';
 import { RelativeDate } from '../common/RelativeDate';
 import { EditingWatched } from '../common/WatchedForm';
 import WatchedMutationForm from '../common/WatchedMutationForm';
-import { container } from '../common/helpers/general';
+import { getAppContainer } from '../common/helpers/general';
 
 export default function AutoTrackedDialog({
   item,
@@ -57,7 +57,7 @@ export default function AutoTrackedDialog({
       isOpen={!!editingWatched}
       lazy
       onClose={onClose}
-      portalContainer={container}
+      portalContainer={getAppContainer()}
     >
       {!item &&
         editingWatched &&

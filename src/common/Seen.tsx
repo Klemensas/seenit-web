@@ -37,8 +37,7 @@ export default function Seen({
             height="200"
             className="img-responsive"
             src={`https://image.tmdb.org/t/p/w1280${item.poster_path}`}
-            style={{ position: 'relative' }}
-            alt=""
+            alt={`${name} poster`}
           />
         </div>
         <div className="p-3 text-left title">
