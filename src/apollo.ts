@@ -64,8 +64,7 @@ export const cache = new InMemoryCache({
   // },
 });
 
-const uri = `http://localhost:9000/graphql`;
-// const uri = `https://server.seenit.show/graphql`
+const uri = process.env.REACT_APP_API_URL;
 const httpLink = new BatchHttpLink({
   uri,
 });
