@@ -1,6 +1,6 @@
 const storagePrefix = 'seenit-web-';
 
-export function getStorageValue<T = object>(key: string) {
+export function getStorageValue(key: string) {
   const item = window.localStorage.getItem(storagePrefix + key);
   if (!item) return null;
 

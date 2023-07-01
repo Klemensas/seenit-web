@@ -4,7 +4,6 @@ import {
   ButtonGroup,
   Button,
   NonIdealState,
-  Code,
   Icon,
 } from '@blueprintjs/core';
 import { Link, useLocation } from 'react-router-dom';

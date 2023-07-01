@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Card, H3, Divider, Collapse, Button, Text } from '@blueprintjs/core';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 import { TvQuery } from '../../graphql';
-import { Link } from 'react-router-dom';
 
 type SeasonType = TvQuery['tv']['seasons'][0];
 
@@ -60,7 +60,8 @@ export default function Season({ season, expanded = false }: SeasonProps) {
                 <div>
                   <p>{episode.overview}</p>
                   <Link
-                    to={({ pathname }) =>
+                    // TODO: figure out types
+                    to={({ pathname }: any) =>
                       `${pathname.replace(/\/$/, '')}/episode/${episode.id}`
                     }
                   >
